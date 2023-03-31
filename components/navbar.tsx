@@ -89,7 +89,7 @@ function PcNavBar(props: ScrollProps): JSX.Element {
       <div
         className={`${
           scroll ? "bg-black " : "bg-transparent "
-        }w-full h-[15vh] md:flex flex-row items-center justify-between hidden fixed top-0 transition-all ease-in-out duration-300 `}
+        }w-full h-[15vh] md:flex flex-row items-center justify-between hidden fixed top-0 transition-all ease-in-out duration-300 z-50`}
       >
         <div className="flex flex-row items-center justify-start w-[30%] hover:cursor-pointer">
           <div className="border-[#767D76] border-2 rounded-full ml-5">
@@ -144,7 +144,7 @@ function MobileNavBar(props: NavProps): JSX.Element {
     <div
       className={`${
         props.scroll ? "bg-black " : "bg-transparent "
-      }w-full h-[15vh]  flex flex-row items-center justify-between md:hidden fixed top-0`}
+      }w-full h-[15vh]  flex flex-row items-center justify-between md:hidden fixed top-0 z-50`}
     >
       <div className="flex flex-col items-center justify-center  rounded-full border-2 border-[#767D76] ml-5">
         <Image

@@ -16,7 +16,32 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="w-full h-[200vh] bg-slate-700 z-50"></div>
+      <div className="h-[100svh] w-full flex flex-col items-center justify-center relative bg-[#0B1A20]">
+        <Image
+          src={"/hero2.jpg"}
+          quality={100}
+          fill
+          priority
+          alt="Hero Image"
+          className="absolute z-10 object-cover"
+        ></Image>
+        <div className="w-full h-full bg-[#171C16] opacity-60 z-20 absolute"></div>
+        <div className="w-full h-[100svh] flex flex-col items-center justify-center z-30 text-center">
+          <h1 className="font-brokman text-[80px] md:text-[100px] text-white font-bold ">
+            Artist Diaries
+          </h1>
+          <p className="font-brokman text-[20px] md:text-[30px] text-white">
+            Art Showcasing Reimagined
+          </p>
+          <div className="w-fit h-fit group absolute bottom-10 hover:cursor-pointer">
+            <div className="group-hover:bg-white bg-[#1A2020] flex flex-col items-center justify-center transition-all ease-in-out duration-300">
+              <p className="font-righteous text-white group-hover:text-[#1A2020] text-3xl p-5 pl-7 pr-7 transition-all ease-in-out duration-300">
+                Login
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }
