@@ -11,7 +11,7 @@ export default function Home() {
     return (
       <div className="h-[100svh] w-full flex flex-col items-center justify-center relative bg-[#0B1A20]">
         <Image
-          src={"/hero2.jpg"}
+          src={"/hero.jpg"}
           quality={100}
           fill
           priority
