@@ -5,3 +5,25 @@
 html {
   text-align: center;
 }
+
+#Images::-webkit-scrollbar-thumb:hover {
+  background: transparent;
+}
+
+#Images::-webkit-scrollbar {
+  display: none;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+#Images::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#Images::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+#Images::-webkit-scrollbar-thumb:hover {
+  background: transparent;
+}
