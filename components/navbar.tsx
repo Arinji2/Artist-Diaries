@@ -3,6 +3,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
+import Link from "next/link";
 import * as React from "react";
 import { useState, useEffect } from "react";
 
@@ -18,9 +19,7 @@ interface NavProps {
 function Navbar() {
   const [scroll, setScroll] = useState(false);
   const [nav, setNav] = useState(false);
-  useEffect(() => {
-    console.log(nav);
-  }, [nav]);
+
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
@@ -91,26 +90,33 @@ function PcNavBar(props: ScrollProps): JSX.Element {
           scroll ? "bg-black " : "bg-transparent "
         }w-full h-[15vh] md:flex flex-row items-center justify-between hidden fixed top-0 transition-all ease-in-out duration-300 z-50`}
       >
-        <div className="flex flex-row items-center justify-start w-[30%] hover:cursor-pointer">
-          <div className="border-[#767D76] border-2 rounded-full ml-5">
-            <Image
-              src={"/logo.png"}
-              quality={100}
-              alt="Logo"
-              width={40}
-              height={40}
-              className="m-5"
-            ></Image>
+        <Link
+          href={"/"}
+          className="flex flex-row items-center justify-start w-[30%]"
+        >
+          <div className="flex flex-row items-center justify-start  hover:cursor-pointer">
+            <div className="border-[#767D76] border-2 rounded-full ml-5 shrink-0">
+              <Image
+                src={"/logo.png"}
+                quality={100}
+                alt="Logo"
+                width={40}
+                height={40}
+                className="m-5"
+              ></Image>
+            </div>
+
+            <div className="flex flex-col items-start justify-center h-[15vh] text-left ml-5">
+              <p className="font-hammersmith text-3xl text-[#767D76]">
+                ARTIST DIARIES
+              </p>
+              <p className="font-laila text-[10px] text-[#767D76] font-medium">
+                Art Showcasing Reimagined
+              </p>
+            </div>
           </div>
-          <div className="flex flex-col items-start justify-center h-[15vh] text-left ml-5">
-            <p className="font-hammersmith text-3xl text-[#767D76]">
-              ARTIST DIARIES
-            </p>
-            <p className="font-laila text-[10px] text-[#767D76] font-medium">
-              Art Showcasing Reimagined
-            </p>
-          </div>
-        </div>
+        </Link>
+
         <div className="flex flex-row items-center justify-evenly text-white text-2xl mr-5 w-[40%] font-righteous">
           <div className="w-fit flex flex-col items-center justify-center group hover:cursor-pointer">
             <p>Explore</p>
@@ -146,16 +152,18 @@ function MobileNavBar(props: NavProps): JSX.Element {
         props.scroll ? "bg-black " : "bg-transparent "
       }w-full h-[15vh]  flex flex-row items-center justify-between md:hidden fixed top-0 z-50`}
     >
-      <div className="flex flex-col items-center justify-center  rounded-full border-2 border-[#767D76] ml-5">
-        <Image
-          src={"/logo.png"}
-          quality={100}
-          alt="Logo"
-          width={40}
-          height={40}
-          className="m-5"
-        ></Image>
-      </div>
+      <Link href="/">
+        <div className="flex flex-col items-center justify-center  rounded-full border-2 border-[#767D76] ml-5">
+          <Image
+            src={"/logo.png"}
+            quality={100}
+            alt="Logo"
+            width={40}
+            height={40}
+            className="m-5"
+          ></Image>
+        </div>
+      </Link>
       <div className="w-[50%] flex flex-col items-end justify-center relative">
         <FontAwesomeIcon
           icon={faBars as IconProp}
