@@ -289,7 +289,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta
           property="og:image"
-          content="https://artistdiaries.arinji.me/public/hero.jpg"
+          content="https://artist.arinji.me/_next/image?url=%2Fhero.jpg&w=750&q=100"
         ></meta>
         <meta
           property="og:title"
