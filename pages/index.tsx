@@ -101,28 +101,28 @@ export default function Home() {
           image1="/Topics/Scenery1.jpg"
           image2="/Topics/Scenery2.jpg"
           image3="/Topics/Scenery3.jpg"
-          location="/scenery"
+          location="/topics/scenery"
         />
         <Topics
           title="Fantasy"
           image1="/Topics/Fantasy1.jpg"
           image2="/Topics/Fantasy2.jpg"
           image3="/Topics/Fantasy3.jpg"
-          location="/fantasy"
+          location="/topics/fantasy"
         />
         <Topics
           title="Realistic"
           image1="/Topics/Realistic1.jpg"
           image2="/Topics/Realistic2.jpg"
           image3="/Topics/Realistic3.jpg"
-          location="/realistic"
+          location="/topics/realistic"
         />
         <Topics
           title="People"
           image1="/Topics/People1.jpg"
           image2="/Topics/People2.jpg"
           image3="/Topics/People3.jpg"
-          location="/people"
+          location="/topics/people"
         />
       </div>
     );
