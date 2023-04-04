@@ -95,11 +95,15 @@ const ImagePage: React.FC = () => {
           <h4 className="text-2xl text-white font-righteous bg-[#960226] rounded-lg p-2 hover:cursor-pointer">
             Likes: {imageData?.likes?.length}
           </h4>
-          <Link href={"/topics/scenery"}>
-            <h5 className="text-2xl text-white font-righteous bg-[#960226] rounded-lg p-2 hover:cursor-pointer">
-              Back to Viewer{" "}
-            </h5>
-          </Link>
+
+          <h5
+            className="text-2xl text-white font-righteous bg-[#960226] rounded-lg p-2 hover:cursor-pointer"
+            onClick={() => {
+              window.history.back();
+            }}
+          >
+            Back to Viewer{" "}
+          </h5>
         </div>
       </div>
     </div>
