@@ -124,6 +124,48 @@ export default function Home() {
           image3="/Topics/People3.jpg"
           location="/topics/people"
         />
+        <Topics
+          title="Animated"
+          image1="/Topics/Animated1.jpg"
+          image2="/Topics/Animated2.jpg"
+          image3="/Topics/Animated3.jpg"
+          location="/topics/animated"
+        />
+        <Topics
+          title="FanArt"
+          image1="/Topics/FanArt1.jpg"
+          image2="/Topics/FanArt2.jpg"
+          image3="/Topics/FanArt3.jpg"
+          location="/topics/fanArt"
+        />
+        <Topics
+          title="Modern"
+          image1="/Topics/Modern1.jpg"
+          image2="/Topics/Modern2.jpg"
+          image3="/Topics/Modern3.jpg"
+          location="/topics/modern"
+        />
+        <Topics
+          title="StillLife"
+          image1="/Topics/StillLife1.jpg"
+          image2="/Topics/StillLife2.jpg"
+          image3="/Topics/StillLife3.jpg"
+          location="/topics/stillLife"
+        />
+        <Topics
+          title="Nature"
+          image1="/Topics/Nature1.jpg"
+          image2="/Topics/Nature2.jpg"
+          image3="/Topics/Nature3.jpg"
+          location="/topics/nature"
+        />
+        <Topics
+          title="Charcoal"
+          image1="/Topics/Charcoal1.jpg"
+          image2="/Topics/Charcoal2.jpg"
+          image3="/Topics/Charcoal3.jpg"
+          location="/topics/charcoal"
+        />
       </div>
     );
   }
