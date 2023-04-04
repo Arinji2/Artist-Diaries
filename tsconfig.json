@@ -22,7 +22,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "pages/prototypes/auth.jsx"
+    "pages/prototypes/auth.jsx",
+    "pages/topics/[tableName]"
   ],
   "exclude": ["node_modules"]
 }

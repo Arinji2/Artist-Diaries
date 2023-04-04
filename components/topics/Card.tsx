@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { Oval } from "react-loader-spinner";
 interface Item {
   uid: number;
   name: string;
@@ -23,11 +24,13 @@ export const Card: React.FC<CardProps> = ({ item, tableName }) => {
       <div className="flex flex-col items-center justify-start w-[300px] h-[300px] overflow-hidden m-5 group relative rounded-lg hover:cursor-pointer">
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <img
-              src="/logo.png"
-              alt="loading icon"
-              className="w-30 h-30 text-gray-400"
-            />
+            <Oval
+              color="#960226"
+              secondaryColor="transparent"
+              strokeWidth={2}
+              height={130}
+              width={130}
+            ></Oval>
           </div>
         )}
 
