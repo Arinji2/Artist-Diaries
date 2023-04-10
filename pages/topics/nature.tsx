@@ -49,7 +49,7 @@ const Nature: NextPage<any> = ({ serverRes }) => {
 
   return (
     <div className="min-h-[100svh] h-fit w-full flex flex-col items-center justify-center text-black bg-[#D9D9D9]">
-      <h1 className="text-[60px] md:text-[70px] font-righteous text-[#960226] mt-16">
+      <h1 className="text-[60px] md:text-[70px] font-righteous text-[#960226] mt-32">
         Nature
       </h1>
 
