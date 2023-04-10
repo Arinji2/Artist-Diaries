@@ -10,7 +10,6 @@ export default async function handler(
   const offset = req.query.offset as string;
 
   const offsetNumber = parseInt(offset);
-  console.log(offsetNumber);
 
   if (isNaN(offsetNumber)) {
     return res.status(400).json({ message: 'Invalid "offset" parameter' });
@@ -20,8 +19,6 @@ export default async function handler(
     .from(table)
     .select("*")
     .range(offsetNumber, offsetNumber + 4);
-
-  console.log(data);
 
   if (error) {
     console.error(error);
