@@ -72,6 +72,7 @@ function Signup() {
           }
         }
         if (res.data.user) {
+          localStorage.setItem("user", "true");
           window.location.assign("/");
         }
       });

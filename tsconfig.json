@@ -23,7 +23,8 @@
     "**/*.ts",
     "**/*.tsx",
     "pages/prototypes/auth.jsx",
-    "pages/topics/[tableName]"
+    "pages/topics/[tableName]",
+    "components/Account/login.jsx"
   ],
   "exclude": ["node_modules"]
 }

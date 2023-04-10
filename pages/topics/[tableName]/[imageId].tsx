@@ -1,6 +1,11 @@
-import { GetServerSideProps, NextPage } from "next";
+import LoginComp from "@/components/Account/login";
+import VerifyComp from "@/components/Account/verify";
+import { faThumbsUp } from "@fortawesome/fontawesome-free-solid";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useUser } from "@supabase/auth-helpers-react";
+import { GetServerSideProps } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Oval } from "react-loader-spinner";
@@ -15,10 +20,11 @@ interface ImageData {
   description: string;
   location: string;
   artist: number;
-  likes: number[];
+  likes: string[];
 }
 
 const ImagePage: React.FC = () => {
+  const user = useUser();
   const [imageLoading, setImageLoading] = useState<boolean>(true);
   const [imageData, setImageData] = useState<ImageData>({
     name: "",
@@ -27,29 +33,81 @@ const ImagePage: React.FC = () => {
     artist: 0,
     likes: [],
   });
+  const [like, setLike] = useState<boolean>(false);
+  const [likes, setLikes] = useState<number>(0);
   const [artistData, setArtistData] = useState<any>({});
+  const [loggedIn, setLoggedIn] = useState<boolean>(false);
+  const [verified, setVerified] = useState<boolean>(false);
   const router = useRouter();
-  const fetchData = async () => {
-    const { imageId, tableName } = router.query;
-    const imageDataFetched = await fetch(
-      `/api/fetchImage?uid=${imageId}&table=${tableName}`
-    );
-    var imageData = await imageDataFetched.json();
-
-    const artistDataFetched = await fetch(
-      `/api/fetchArtist?id=${imageData[0].artist}`
-    );
-    var artistData = await artistDataFetched.json();
-    setArtistData(artistData[0]);
-    setImageData(imageData[0]);
-  };
+  const { imageId, tableName } = router.query;
 
   useEffect(() => {
+    const fetchData = async () => {
+      const imageDataFetched = await fetch(
+        `/api/fetchImage?uid=${imageId}&table=${tableName}`
+      );
+      var imageData = await imageDataFetched.json();
+
+      const artistDataFetched = await fetch(
+        `/api/fetchArtist?id=${imageData[0].artist}`
+      );
+      var artistData = await artistDataFetched.json();
+      setArtistData(artistData[0]);
+      setLikes(imageData[0].likes.length);
+      setImageData(imageData[0]);
+    };
+
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (user) if (imageData.likes.includes(user.id)) setLike(true);
+  }, [user, imageData, like, likes]);
+
+  const accountVerification = (path: Number) => {
+    if (user) {
+      if (path === 1) handleLike();
+      else if (path === 0) handleUnlike();
+      return;
+    }
+    const userLocal = localStorage.getItem("user");
+    if (userLocal === null) {
+      setLoggedIn(true);
+      return;
+    } else if (userLocal === "true") {
+      setVerified(true);
+      return;
+    }
+  };
+  const handleUnlike = () => {
+    const value = imageData.likes.filter((like) => like !== user?.id);
+    fetch(
+      `/api/updateLikes?uid=${imageId}&table=${tableName}&value=${value}`
+    ).then((res) => {
+      if (res.status == 200) {
+        setLikes((prevLikes) => prevLikes - 1);
+        setLike(false);
+      }
+    });
+  };
+
+  const handleLike = () => {
+    const value = [...imageData.likes, user?.id];
+    const { imageId, tableName } = router.query;
+    fetch(
+      `/api/updateLikes?uid=${imageId}&table=${tableName}&value=${value}`
+    ).then((res) => {
+      if (res.status == 200) {
+        setLikes((prevLikes) => prevLikes + 1);
+        setLike(true);
+      }
+    });
+  };
+
   return (
     <div className="relative w-full min-h-[100vh] h-fit bg-[#1A2020] flex flex-col items-center justify-start">
+      <LoginComp flag={loggedIn} setter={setLoggedIn} />
+      <VerifyComp flag={verified} setter={setVerified} />
       <div className=" mt-36"></div>
       <div className="w-full h-full flex flex-col items-center justify-center gap-y-10 md:flex-row  md:justify-evenly m-5 relative">
         {imageLoading ? (
@@ -92,15 +150,25 @@ const ImagePage: React.FC = () => {
           <h4 className="text-xl text-white font-righteous">
             Artist: {artistData?.name == "" ? "Loading" : artistData.name}
           </h4>
-          <h4 className="text-2xl text-white font-righteous bg-[#960226] rounded-lg p-2 hover:cursor-pointer">
-            Likes: {imageData?.likes?.length}
-          </h4>
+          <div
+            className={`text-2xl text-white font-righteous bg-[#960226] rounded-lg p-2 hover:cursor-pointer w-fit flex flex-row items-center justify-center`}
+            onClick={() => {
+              if (like) accountVerification(0);
+              else accountVerification(1);
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faThumbsUp as IconProp}
+              className={`${
+                like ? "text-green-500" : "text-red-500"
+              } w-[20px] h-[20px] mr-2 text-2xl`}
+            />
+            <p>{likes}</p>
+          </div>
 
           <h5
             className="text-2xl text-white font-righteous bg-[#960226] rounded-lg p-2 hover:cursor-pointer"
-            onClick={() => {
-              window.history.back();
-            }}
+            onClick={() => router.back()}
           >
             Back to Viewer{" "}
           </h5>

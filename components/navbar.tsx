@@ -23,7 +23,11 @@ function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       var offset = window.scrollY;
-      if (!window.location.href.endsWith("/")) offset = 10000;
+      if (
+        !window.location.href.endsWith("/") ||
+        !window.location.href.endsWith("#")
+      )
+        offset = 10000;
       if (offset > 100) {
         setScroll(true);
       } else {
@@ -39,7 +43,7 @@ function Navbar() {
       <PcNavBar scroll={scroll}></PcNavBar>
       <MobileNavBar scroll={scroll} setNav={setNav}></MobileNavBar>
       {nav ? (
-        <div className="bg-black z-50 w-full h-[100svh] fixed top-0 overflow-y-scroll transition-all ease-in-out duration-700 flex flex-col items-center justify-start">
+        <div className="bg-black z-[1000] w-full h-[100svh] fixed top-0 overflow-y-scroll transition-all ease-in-out duration-700 flex flex-col items-center justify-start">
           <div className="flex flex-row-reverse w-full justify-between items-center mt-10">
             <div>
               <FontAwesomeIcon
@@ -76,7 +80,7 @@ function Navbar() {
           </div>
         </div>
       ) : (
-        <div className="bg-black z-50 w-0 h-[100svh] fixed top-0 overflow-y-scroll transition-all ease-in-out duration-700 flex flex-col items-center justify-center"></div>
+        <div className="bg-black z-[1000] w-0 h-[100svh] fixed top-0 overflow-y-scroll transition-all ease-in-out duration-700 flex flex-col items-center justify-center"></div>
       )}
     </>
   );
@@ -91,7 +95,7 @@ function PcNavBar(props: ScrollProps): JSX.Element {
       <div
         className={`${
           scroll ? "bg-black " : "bg-transparent "
-        }w-full h-[15vh] md:flex flex-row items-center justify-between hidden fixed top-0 transition-all ease-in-out duration-300 z-50`}
+        }w-full h-[15vh] md:flex flex-row items-center justify-between hidden fixed top-0 transition-all ease-in-out duration-300 z-[1000]`}
       >
         <Link
           href={"/"}
@@ -153,7 +157,7 @@ function MobileNavBar(props: NavProps): JSX.Element {
     <div
       className={`${
         props.scroll ? "bg-black " : "bg-transparent "
-      }w-full h-[15vh]  flex flex-row items-center justify-between md:hidden fixed top-0 z-50`}
+      }w-full h-[15vh]  flex flex-row items-center justify-between md:hidden fixed top-0 z-[1000]`}
     >
       <Link href="/">
         <div className="flex flex-col items-center justify-center  rounded-full border-2 border-[#767D76] ml-5">
