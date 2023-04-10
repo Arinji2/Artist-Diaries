@@ -22,15 +22,18 @@ function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const offset = window.scrollY;
+      var offset = window.scrollY;
+      if (!window.location.href.endsWith("/")) offset = 10000;
       if (offset > 100) {
         setScroll(true);
       } else {
         setScroll(false);
       }
     };
+    handleScroll();
     window.addEventListener("scroll", handleScroll);
-  });
+  }, []);
+
   return (
     <>
       <PcNavBar scroll={scroll}></PcNavBar>
@@ -63,13 +66,13 @@ function Navbar() {
             </div>
           </div>
           <div className="flex flex-col items-center justify-center h-[30%] ">
-            <div className="w-fit h-fit group">
+            <Link href={"login"} className="w-fit h-fit group">
               <div className="group-hover:bg-white bg-[#1A2020] flex flex-col items-center justify-center transition-all ease-in-out duration-300">
                 <p className="font-righteous text-white group-hover:text-[#1A2020] text-3xl p-5 pl-7 pr-7 transition-all ease-in-out duration-300">
                   Login
                 </p>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
       ) : (
@@ -132,13 +135,13 @@ function PcNavBar(props: ScrollProps): JSX.Element {
           </div>
         </div>
         <div className="w-[30%] h-full flex flex-col items-end justify-center mr-5  hover:cursor-pointer">
-          <div className="w-fit h-fit group">
+          <Link href="/login" className="w-fit h-fit group">
             <div className="group-hover:bg-white bg-[#1A2020] flex flex-col items-center justify-center transition-all ease-in-out duration-300">
               <p className="font-righteous text-white group-hover:text-[#1A2020] text-3xl p-5 pl-7 pr-7 transition-all ease-in-out duration-300">
                 Login
               </p>
             </div>
-          </div>
+          </Link>
         </div>
       </div>
     </>

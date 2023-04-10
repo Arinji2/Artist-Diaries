@@ -40,13 +40,16 @@ export default function Home() {
           <p className="font-brokman text-[20px] md:text-[30px] text-white">
             Art Showcasing Reimagined
           </p>
-          <div className="w-fit h-fit group absolute bottom-10 hover:cursor-pointer">
+          <Link
+            href="/login"
+            className="w-fit h-fit group absolute bottom-10 hover:cursor-pointer"
+          >
             <div className="group-hover:bg-white bg-[#1A2020] flex flex-col items-center justify-center transition-all ease-in-out duration-300">
               <p className="font-righteous text-white group-hover:text-[#1A2020] text-3xl p-5 pl-7 pr-7 transition-all ease-in-out duration-300">
                 Start Painting
               </p>
             </div>
-          </div>
+          </Link>
         </div>
       </div>
     );
@@ -180,7 +183,6 @@ export default function Home() {
       if (container) {
         const hasScrollbar = container.scrollWidth > container.clientWidth;
         setJustify(hasScrollbar ? " justify-start" : " justify-evenly");
-        console.log(container.scrollWidth);
       }
     };
 
@@ -312,13 +314,16 @@ export default function Home() {
           What are you waiting for?
         </h3>
 
-        <div className="w-fit h-fit group absolute bottom-10 hover:cursor-pointer">
+        <Link
+          href="/login"
+          className="w-fit h-fit group absolute bottom-10 hover:cursor-pointer"
+        >
           <div className="group-hover:bg-white bg-[#1A2020] flex flex-col items-center justify-center transition-all ease-in-out duration-300">
             <p className="font-righteous text-white group-hover:text-[#1A2020] text-3xl p-5 pl-7 pr-7 transition-all ease-in-out duration-300">
               Start Painting
             </p>
           </div>
-        </div>
+        </Link>
       </div>
     );
   }
