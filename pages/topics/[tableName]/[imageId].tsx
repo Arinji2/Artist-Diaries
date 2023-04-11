@@ -9,6 +9,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Oval } from "react-loader-spinner";
+import debounce from "lodash/debounce";
 
 interface ImagePageProps {
   imageData: any;
@@ -43,26 +44,30 @@ const ImagePage: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const imageDataFetched = await fetch(
-        `/api/fetchImage?uid=${imageId}&table=${tableName}`
-      );
-      var imageData = await imageDataFetched.json();
+      if (imageId && tableName) {
+        const imageDataFetched = await fetch(
+          `/api/fetchImage?uid=${imageId}&table=${tableName}`
+        );
+        var imageData = await imageDataFetched.json();
 
-      const artistDataFetched = await fetch(
-        `/api/fetchArtist?id=${imageData[0].artist}`
-      );
-      var artistData = await artistDataFetched.json();
-      setArtistData(artistData[0]);
-      setLikes(imageData[0].likes.length);
-      setImageData(imageData[0]);
+        if (imageData && imageData.length > 0) {
+          const artistDataFetched = await fetch(
+            `/api/fetchArtist?id=${imageData[0].artist}`
+          );
+          var artistData = await artistDataFetched.json();
+          setArtistData(artistData[0]);
+          setLikes(imageData[0].likes.length);
+          setImageData(imageData[0]);
+        }
+      }
     };
 
     fetchData();
-  }, []);
+  }, [imageId, tableName]);
 
   useEffect(() => {
-    if (user) if (imageData.likes.includes(user.id)) setLike(true);
-  }, [user, imageData, like, likes]);
+    if (user) if (imageData.likes.includes(user.id)) setLike(() => true);
+  }, [user, imageData]);
 
   const accountVerification = (path: Number) => {
     if (user) {
@@ -79,19 +84,19 @@ const ImagePage: React.FC = () => {
       return;
     }
   };
-  const handleUnlike = () => {
+  const handleUnlike = debounce(() => {
     const value = imageData.likes.filter((like) => like !== user?.id);
     fetch(
       `/api/updateLikes?uid=${imageId}&table=${tableName}&value=${value}`
     ).then((res) => {
       if (res.status == 200) {
         setLikes((prevLikes) => prevLikes - 1);
-        setLike(false);
+        setLike((prevLike) => !prevLike);
       }
     });
-  };
+  }, 1000);
 
-  const handleLike = () => {
+  const handleLike = debounce(() => {
     const value = [...imageData.likes, user?.id];
     const { imageId, tableName } = router.query;
     fetch(
@@ -99,10 +104,10 @@ const ImagePage: React.FC = () => {
     ).then((res) => {
       if (res.status == 200) {
         setLikes((prevLikes) => prevLikes + 1);
-        setLike(true);
+        setLike((prevLike) => !prevLike);
       }
     });
-  };
+  }, 1000);
 
   return (
     <div className="relative w-full min-h-[100vh] h-fit bg-[#1A2020] flex flex-col items-center justify-start">
@@ -176,29 +181,6 @@ const ImagePage: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export const getServerSideProps: GetServerSideProps<ImagePageProps> = async (
-  context
-) => {
-  const { imageId, tableName } = context.query;
-  const imageDataFetched = await fetch(
-    `${process.env.API_DOMAIN}/api/fetchImage?uid=${imageId}&table=${tableName}`
-  );
-  const imageData = await imageDataFetched.json();
-
-  const artistDataFetched = await fetch(
-    `${process.env.API_DOMAIN}/api/fetchArtist?id=${imageData[0].artist}`
-  );
-  var artistData = await artistDataFetched.json();
-  artistData = artistData[0];
-
-  return {
-    props: {
-      imageData,
-      artistData,
-    },
-  };
 };
 
 export default ImagePage;

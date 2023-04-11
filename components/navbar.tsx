@@ -22,12 +22,10 @@ function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
+      console.log(!window.location.href.endsWith("#"));
       var offset = window.scrollY;
-      if (
-        !window.location.href.endsWith("/") ||
-        !window.location.href.endsWith("#")
-      )
-        offset = 10000;
+      if (!window.location.href.endsWith("/")) offset = 10000;
+      else if (!window.location.href.endsWith("#")) offset = 10000;
       if (offset > 100) {
         setScroll(true);
       } else {
