@@ -1,3 +1,7 @@
+import {
+  parseLocalStorageData,
+  verifyArtist,
+} from "@/utils/artistLocalStorage";
 import { faBars, faTimes } from "@fortawesome/fontawesome-free-solid";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
@@ -9,6 +13,7 @@ import { useState, useEffect } from "react";
 
 interface ScrollProps {
   scroll: boolean;
+  navBarProps: NavBarProps[];
 }
 
 interface NavProps {
@@ -16,29 +21,99 @@ interface NavProps {
   setNav: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+interface NavBarProps {
+  name: string;
+  link: string;
+}
+
 function Navbar() {
   const [scroll, setScroll] = useState(false);
   const [nav, setNav] = useState(false);
+  const [artist, setArtist] = useState(false);
+  const [navBarProps, setNavBarProps] = useState([
+    {
+      name: "Explore",
+      link: "/explore",
+    },
+    {
+      name: "About",
+      link: "/about",
+    },
+    {
+      name: "Showcase",
+      link: "/showcase",
+    },
+  ]);
 
   useEffect(() => {
     const handleScroll = () => {
-      console.log(!window.location.href.endsWith("#"));
       var offset = window.scrollY;
-      if (!window.location.href.endsWith("/")) offset = 10000;
-      else if (!window.location.href.endsWith("#")) offset = 10000;
-      if (offset > 100) {
-        setScroll(true);
+      var isMainPage = window.location.pathname === "/";
+
+      if (isMainPage) {
+        if (offset > 100) {
+          setScroll(true);
+        } else {
+          setScroll(false);
+        }
       } else {
-        setScroll(false);
+        setScroll(true);
       }
     };
     handleScroll();
     window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleChange = () => {
+      const data = verifyArtist();
+      if (data)
+        setNavBarProps([
+          {
+            name: "Manage",
+            link: "/artist/manage",
+          },
+          {
+            name: "Upload",
+            link: "/artist/upload",
+          },
+          {
+            name: "View",
+            link: "/artist/view",
+          },
+        ]);
+      else
+        setNavBarProps([
+          {
+            name: "Explore",
+            link: "/explore",
+          },
+          {
+            name: "About",
+            link: "/about",
+          },
+          {
+            name: "Showcase",
+            link: "/showcase",
+          },
+        ]);
+    };
+    handleChange();
+
+    window.addEventListener("artistUpdated", handleChange);
+
+    return () => {
+      window.addEventListener("artistUpdated", handleChange);
+    };
   }, []);
 
   return (
     <>
-      <PcNavBar scroll={scroll}></PcNavBar>
+      <PcNavBar scroll={scroll} navBarProps={navBarProps}></PcNavBar>
       <MobileNavBar scroll={scroll} setNav={setNav}></MobileNavBar>
       {nav ? (
         <div className="bg-black z-[1000] w-full h-[100svh] fixed top-0 overflow-y-scroll transition-all ease-in-out duration-700 flex flex-col items-center justify-start">
@@ -54,18 +129,24 @@ function Navbar() {
             </div>
           </div>
           <div className="flex flex-col items-center justify-center h-[60%] gap-y-10 text-white font-righteous text-3xl">
-            <div className="w-fit flex flex-col items-center justify-center group hover:cursor-pointer">
-              <p>Explore</p>
-              <div className="w-full h-[4px] bg-transparent group-hover:bg-white group-hover:scale-x-100 scale-x-0 transition-all ease-in-out duration-500 origin-left"></div>
-            </div>
-            <div className="w-fit flex flex-col items-center justify-center group hover:cursor-pointer">
-              <p>About</p>
-              <div className="w-full h-[4px] bg-transparent group-hover:bg-white group-hover:scale-x-100 scale-x-0 transition-all ease-in-out duration-500 origin-left"></div>
-            </div>
-            <div className="w-fit flex flex-col items-center justify-center group hover:cursor-pointer">
-              <p>Showcase</p>
-              <div className="w-full h-[4px] bg-transparent group-hover:bg-white group-hover:scale-x-100 scale-x-0 transition-all ease-in-out duration-500 origin-left"></div>
-            </div>
+            <Link href={navBarProps[0].link}>
+              <div className="w-fit flex flex-col items-center justify-center group hover:cursor-pointer">
+                {navBarProps[0].name}
+                <div className="w-full h-[4px] bg-transparent group-hover:bg-white group-hover:scale-x-100 scale-x-0 transition-all ease-in-out duration-500 origin-left"></div>
+              </div>
+            </Link>
+            <Link href={navBarProps[1].link}>
+              <div className="w-fit flex flex-col items-center justify-center group hover:cursor-pointer">
+                {navBarProps[1].name}
+                <div className="w-full h-[4px] bg-transparent group-hover:bg-white group-hover:scale-x-100 scale-x-0 transition-all ease-in-out duration-500 origin-left"></div>
+              </div>
+            </Link>
+            <Link href={navBarProps[2].link}>
+              <div className="w-fit flex flex-col items-center justify-center group hover:cursor-pointer">
+                {navBarProps[2].name}
+                <div className="w-full h-[4px] bg-transparent group-hover:bg-white group-hover:scale-x-100 scale-x-0 transition-all ease-in-out duration-500 origin-left"></div>
+              </div>
+            </Link>
           </div>
           <div className="flex flex-col items-center justify-center h-[30%] ">
             <Link href={"login"} className="w-fit h-fit group">
@@ -88,12 +169,13 @@ export default Navbar;
 
 function PcNavBar(props: ScrollProps): JSX.Element {
   const scroll = props.scroll;
+  const navBarProps = props.navBarProps;
   return (
     <>
       <div
         className={`${
           scroll ? "bg-black " : "bg-transparent "
-        }w-full h-[15vh] md:flex flex-row items-center justify-between hidden fixed top-0 transition-all ease-in-out duration-300 z-[1000]`}
+        }w-full h-[15vh] md:flex fixed flex-row items-center justify-between hidden top-0 transition-all ease-in-out duration-300 z-[1000]`}
       >
         <Link
           href={"/"}
@@ -123,18 +205,24 @@ function PcNavBar(props: ScrollProps): JSX.Element {
         </Link>
 
         <div className="flex flex-row items-center justify-evenly text-white text-2xl mr-5 w-[40%] font-righteous">
-          <div className="w-fit flex flex-col items-center justify-center group hover:cursor-pointer">
-            <p>Explore</p>
-            <div className="w-full h-[4px] bg-transparent group-hover:bg-white group-hover:scale-x-100 scale-x-0 transition-all ease-in-out duration-500 origin-left"></div>
-          </div>
-          <div className="w-fit flex flex-col items-center justify-center group hover:cursor-pointer">
-            <p>About</p>
-            <div className="w-full h-[4px] bg-transparent group-hover:bg-white group-hover:scale-x-100 scale-x-0 transition-all ease-in-out duration-500 origin-left"></div>
-          </div>
-          <div className="w-fit flex flex-col items-center justify-center group hover:cursor-pointer">
-            <p>Showcase</p>
-            <div className="w-full h-[4px] bg-transparent group-hover:bg-white group-hover:scale-x-100 scale-x-0 transition-all ease-in-out duration-500 origin-left"></div>
-          </div>
+          <Link href={navBarProps[0].link}>
+            <div className="w-fit flex flex-col items-center justify-center group hover:cursor-pointer">
+              {navBarProps[0].name}
+              <div className="w-full h-[4px] bg-transparent group-hover:bg-white group-hover:scale-x-100 scale-x-0 transition-all ease-in-out duration-500 origin-left"></div>
+            </div>
+          </Link>
+          <Link href={navBarProps[1].link}>
+            <div className="w-fit flex flex-col items-center justify-center group hover:cursor-pointer">
+              {navBarProps[1].name}
+              <div className="w-full h-[4px] bg-transparent group-hover:bg-white group-hover:scale-x-100 scale-x-0 transition-all ease-in-out duration-500 origin-left"></div>
+            </div>
+          </Link>
+          <Link href={navBarProps[2].link}>
+            <div className="w-fit flex flex-col items-center justify-center group hover:cursor-pointer">
+              {navBarProps[2].name}
+              <div className="w-full h-[4px] bg-transparent group-hover:bg-white group-hover:scale-x-100 scale-x-0 transition-all ease-in-out duration-500 origin-left"></div>
+            </div>
+          </Link>
         </div>
         <div className="w-[30%] h-full flex flex-col items-end justify-center mr-5  hover:cursor-pointer">
           <Link href="/login" className="w-fit h-fit group">

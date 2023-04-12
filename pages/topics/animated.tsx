@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useIntersection } from "react-use";
 import type { NextPage } from "next";
 import { Card } from "@/components/topics/Card";
-
 interface Item {
   uid: number;
   name: string;

@@ -2,10 +2,12 @@ import { faUserLock } from "@fortawesome/fontawesome-free-solid";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
+import { useRouter } from "next/router";
 
 import { SetStateAction, useState } from "react";
 
 function ArtistLogin() {
+  const router = useRouter();
   const supabase = useSupabaseClient();
 
   const [email, setEmail] = useState("");
@@ -63,7 +65,10 @@ function ArtistLogin() {
                 emailErrorHelper("Not valid Artist Account");
                 passwordErrorHelper("Not valid Artist Account");
                 return;
-              } else window.location.href = "/artist/dashboard";
+              } else {
+                localStorage.setItem("artist", JSON.stringify(data[0]));
+                window.dispatchEvent(new Event("artistUpdated"));
+              }
             });
           })
           .catch((err) => {
