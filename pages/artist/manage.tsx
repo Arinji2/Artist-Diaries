@@ -36,7 +36,7 @@ function Manage() {
     if (verifyArtist() === false) router.push("/artist/denied");
     const artistResp = parseLocalStorageData() as Artist;
     if (artistResp !== null) setArtist(artistResp);
-  }, []);
+  }, [router]);
 
   return (
     <div className="w-full min-h-[100svh] h-fit bg-[#D9D9D9] flex flex-col items-center justify-start">
@@ -151,7 +151,7 @@ const Favorites: React.FC<ChildProps> = ({ artist }) => {
       </h2>
       <div className="flex flex-row items-center justify-evenly w-full shrink-0 pb-10 flex-wrap gap-y-5">
         {favoritesArray.map((favorite) => {
-          return <Cards data={favorite} />;
+          return <Cards data={favorite} key={favorite[0].uid} />;
         })}
       </div>
     </div>
