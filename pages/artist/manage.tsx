@@ -108,7 +108,7 @@ const Favorites: React.FC<ChildProps> = ({ artist }) => {
   interface Props {
     data: Item[];
   }
-  const [favoritesArray, setFavoritesArray] = useState<Item[]>([]);
+  const [favoritesArray, setFavoritesArray] = useState<any[]>([]);
   useEffect(() => {
     if (artist === null || undefined) return;
 
@@ -151,7 +151,8 @@ const Favorites: React.FC<ChildProps> = ({ artist }) => {
       </h2>
       <div className="flex flex-row items-center justify-evenly w-full shrink-0 pb-10 flex-wrap gap-y-5">
         {favoritesArray.map((favorite) => {
-          return <Cards data={favorite} key={favorite[0].uid} />;
+          console.log(favorite);
+          return <Cards data={favorite as any} key={favorite[0].uid as any} />;
         })}
       </div>
     </div>

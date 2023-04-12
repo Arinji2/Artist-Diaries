@@ -44,7 +44,7 @@ const Animated: NextPage<any> = ({ serverRes }) => {
     if (intersection && intersection.isIntersecting && !fetching) {
       fetchData();
     }
-  }, [intersection, fetching, fetchData]);
+  }, [intersection, fetching]);
 
   return (
     <div className="min-h-[100svh] h-fit w-full flex flex-col items-center justify-center text-black bg-[#D9D9D9]">
