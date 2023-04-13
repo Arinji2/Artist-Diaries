@@ -18,12 +18,13 @@ export const parseLocalStorageData = () => {
 
   if (rawData === null)
     return {
-      user_id: "",
+      id: "",
     };
-  const jsonData: Artist[] = JSON.parse(rawData);
-  return jsonData[0];
+
+  const jsonData: Artist = JSON.parse(rawData);
+  return jsonData;
 };
 
 export const verifyArtist = () => {
-  return parseLocalStorageData().user_id == "" ? false : true;
+  return parseLocalStorageData().id == "" ? false : true;
 };

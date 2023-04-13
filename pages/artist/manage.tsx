@@ -7,6 +7,7 @@ import { faEdit, faCheck } from "@fortawesome/fontawesome-free-solid";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -24,7 +25,8 @@ interface Item {
 }
 const getImageData = async (table: String, uid: Number) => {
   const response = await fetch(`/api/fetchImage?table=${table}&uid=${uid}`);
-  const data = await response.json();
+  var data = await response.json();
+  data = data[0];
   return data as Item;
 };
 
@@ -45,6 +47,7 @@ function Manage() {
       </h1>
       <PersonalInfo artist={artist} />
       <Favorites artist={artist} />
+      <Images artist={artist} />
     </div>
   );
 }
@@ -106,16 +109,15 @@ export default Manage;
 
 const Favorites: React.FC<ChildProps> = ({ artist }) => {
   interface Props {
-    data: Item[];
+    data: Item;
   }
-  const [favoritesArray, setFavoritesArray] = useState<any[]>([]);
+  const [favoritesArray, setFavoritesArray] = useState<Item[]>([]);
   useEffect(() => {
     if (artist === null || undefined) return;
 
     artist.favorites.forEach((favorite) => {
       const data = getImageData(favorite.table, favorite.uid);
       data.then((data) => {
-        console.log(typeof data);
         setFavoritesArray((prev) => [...prev, data]);
       });
     });
@@ -127,32 +129,101 @@ const Favorites: React.FC<ChildProps> = ({ artist }) => {
         <div className="w-full h-[70%] relative">
           <Image
             alt={"Favorite"}
-            src={data[0].location}
+            src={data.location}
             fill
             quality={100}
             className="object-cover"
           />
         </div>
         <h1 className="text-2xl text-white line-clamp-1 shrink-0">
-          Name: <span className="text-[#BD4C67] ">{data[0].name}</span>
+          Name: <span className="text-[#BD4C67] ">{data.name}</span>
         </h1>
         <h2 className="text-lg text-white line-clamp-1 shrink-0">
           Description:{" "}
-          <span className="text-[#BD4C67] ">{data[0].description}</span>
+          <span className="text-[#BD4C67] ">{data.description}</span>
         </h2>
       </div>
     );
   };
 
   return (
-    <div className="w-full h-fit">
+    <div className="w-full min-h-[700px] h-fit">
       <h2 className="text-[50px] md:text-[60px] font-righteous text-[#960226] mt-32">
         Favorites
       </h2>
-      <div className="flex flex-row items-center justify-evenly w-full shrink-0 pb-10 flex-wrap gap-y-5">
+      <div className="flex flex-row items-center justify-evenly w-full shrink-0 pb-10 flex-wrap gap-5">
         {favoritesArray.map((favorite) => {
-          console.log(favorite);
-          return <Cards data={favorite as any} key={favorite[0].uid as any} />;
+          return <Cards data={favorite} key={favorite.uid} />;
+        })}
+      </div>
+    </div>
+  );
+};
+
+const Images: React.FC<ChildProps> = ({ artist }) => {
+  interface Props {
+    data: Item;
+    index: number;
+  }
+  const [imagesArray, setImagesArray] = useState<Item[]>([]);
+  const [tablesArray, setTablesArray] = useState<String[]>([]);
+  useEffect(() => {
+    if (artist === null || undefined) return;
+
+    artist.images.forEach((image) => {
+      const data = getImageData(image.table, image.uid);
+      data.then((data) => {
+        setImagesArray((prev) => [...prev, data]);
+
+        const string = data.location.split("/")[4];
+        setTablesArray((prev) => [...prev, string]);
+      });
+    });
+  }, [artist]);
+
+  const Cards: React.FC<Props> = ({ data, index }) => {
+    return (
+      <Link href={`${tablesArray[index]}/${data.uid}`}>
+        <div className="w-[250px] h-[500px] bg-[#440212] shadow-lg shadow-black rounded-lg flex flex-col items-center justify-start font-righteous gap-5 relative text-ellipsis overflow-hidden group hover:cursor-pointer">
+          <div className="w-full h-[70%] relative overflow-hidden">
+            <Image
+              alt={"Favorite"}
+              src={data.location}
+              fill
+              quality={100}
+              className="object-cover group-hover:scale-110 transition-all ease-in-out duration-300"
+            />
+          </div>
+
+          <h1 className="text-2xl text-white line-clamp-1 shrink-0">
+            Name: <span className="text-[#BD4C67] ">{data.name}</span>
+          </h1>
+          <h2 className="text-lg text-white line-clamp-1 shrink-0">
+            Description:{" "}
+            <span className="text-[#BD4C67] ">{data.description}</span>
+          </h2>
+          <h3 className="text-md text-white line-clamp-1 shrink-0">
+            Table: <span className="text-[#BD4C67] ">{tablesArray[index]}</span>
+          </h3>
+        </div>
+      </Link>
+    );
+  };
+
+  useEffect(() => {
+    console.log(imagesArray);
+  }, [imagesArray]);
+  return (
+    <div className="w-full min-h-[100svh] h-fit bg-[#960226] flex flex-col items-center justify-start">
+      <h1 className="text-[60px] md:text-[70px] font-righteous text-[#D9D9D9] mt-20">
+        Images
+      </h1>
+      <p className="text-[20px] md:text-[30px] font-righteous text-[#D9D9D9]">
+        Click for Detailed View
+      </p>
+      <div className="flex flex-row items-center justify-evenly w-full shrink-0 pb-10 flex-wrap gap-5">
+        {imagesArray.map((favorite, i) => {
+          return <Cards data={favorite} key={favorite.uid} index={i} />;
         })}
       </div>
     </div>
