@@ -57,7 +57,7 @@ function ImageComp() {
     name: "",
     location: "",
     artist: 0,
-    likes: 0,
+    likes: [],
     description: "",
   });
   const [favoritesObj, setFavoritesObj] = useState<ImageInterface>({
