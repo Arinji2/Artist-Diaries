@@ -1,15 +1,24 @@
+import {
+  parseLocalStorageData,
+  Artist,
+  Image as ImageInterface,
+} from "@/utils/artistLocalStorage";
 import { faCheck, faEdit, faTimes } from "@fortawesome/fontawesome-free-solid";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import { useRouter } from "next/router";
+import { Router, useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { reFetchArtistData } from "../manage";
+import { useUser } from "@supabase/auth-helpers-react";
+import DeleteVerComp from "@/components/manage/favorites";
+import React from "react";
 interface Item {
   uid: number;
   name: string;
   location: string;
   artist: number;
-  likes: number;
+  likes: string[];
   description: string;
 }
 
@@ -19,6 +28,26 @@ interface CompProps {
   valueUpdater: (newValue: string) => void;
   table: string;
   id: string;
+}
+
+interface FavoriteProps {
+  value: ImageInterface[];
+  valueUpdater: (newValue: ImageInterface[]) => void;
+  flag: boolean;
+  flagUpdater: (newValue: boolean) => void;
+  id: number;
+  imageObj: ImageInterface;
+  imageId: number;
+}
+
+interface DeleteProps {
+  imageId: string;
+  table: string;
+  favoriteCheck: boolean;
+  favoriteUpdater: (newValue: boolean) => void;
+  valueUpdater: (newValue: ImageInterface[]) => void;
+  value: ImageInterface[];
+  id: number;
 }
 
 function ImageComp() {
@@ -31,53 +60,132 @@ function ImageComp() {
     likes: 0,
     description: "",
   });
+  const [favoritesObj, setFavoritesObj] = useState<ImageInterface>({
+    uid: 0,
+    table: "",
+    location: "",
+  });
+  const [id, setId] = useState<number>(0);
   const { tableName, imageId } = router.query;
-
+  const [favoriteCheck, setFavoriteCheck] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [favorites, setFavorites] = useState<ImageInterface[]>([]);
+  const [images, setImages] = useState<ImageInterface[]>([]);
+  const [favoritesFlag, setFavoritesFlag] = useState<boolean>(false);
+  const [deleteComp, setDeleteComp] = useState<boolean>(false);
+  const user = useUser();
   useEffect(() => {
+    const checkUser = async () => {
+      if (Array.isArray(tableName) || Array.isArray(imageId)) return;
+
+      const data = await fetch(
+        `/api/fetchArtistUid?id=${imageId}&table=${tableName?.toLowerCase()}`
+      );
+      const formattedData = await data.json();
+
+      if (formattedData[0].artist !== user?.id) router.push("/artist/denied");
+      else fetchData();
+    };
+
     const fetchData = async () => {
+      setId(parseLocalStorageData()?.id as number);
       if (Array.isArray(tableName) || Array.isArray(imageId)) return;
       const rawData = await fetch(
         `/api/fetchImage?table=${tableName?.toLowerCase()}&uid=${imageId}}`
       );
       const jsonData = await rawData.json();
-      setImageData(jsonData[0]);
+      {
+        setImageData(jsonData[0]);
+        setFavoritesObj({
+          uid: parseInt(jsonData[0].uid),
+          table: tableName?.toLowerCase() as string,
+          location: jsonData[0].location,
+        });
+      }
     };
-    if (tableName && imageId) fetchData();
+    if (tableName && imageId) checkUser();
   }, [tableName, imageId]);
 
+  useEffect(() => {
+    const artistResp = parseLocalStorageData() as Artist;
+    if (artistResp !== null) {
+      setFavorites(artistResp.favorites);
+      setImages(artistResp.images);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (favoritesFlag) setFavoriteCheck(true);
+    else setFavoriteCheck(false);
+  }, [favoritesFlag]);
+
   return (
-    <div className="w-full min-h-[100svh] h-fit bg-[#252424] flex flex-col items-center justify-end">
-      <Image
-        src={imageData?.location}
-        width={300}
-        height={300}
-        priority
-        quality={100}
-        alt={imageData?.name}
-        className="mt-32"
-      />
-      <div className="w-[60%] h-1 bg-white rounded-lg m-2 mt-5"> </div>
-      <NameComp
-        oldValue={imageData?.name}
-        newValue={name}
-        valueUpdater={setName}
-        table={
-          Array.isArray(tableName) ? "" : (tableName?.toLowerCase() as string)
-        }
-        id={Array.isArray(imageId) || imageId === undefined ? "" : imageId}
-      />
-      <DescriptionComp
-        oldValue={imageData?.description}
-        newValue={description}
-        valueUpdater={setDescription}
-        table={
-          Array.isArray(tableName) ? "" : (tableName?.toLowerCase() as string)
-        }
-        id={Array.isArray(imageId) || imageId === undefined ? "" : imageId}
-      />
-    </div>
+    <React.Fragment>
+      {deleteComp ? (
+        <DeleteVerComp flag={deleteComp} setter={setDeleteComp} />
+      ) : (
+        <DeleteVerComp flag={deleteComp} setter={setDeleteComp} />
+      )}
+      <div className="w-full min-h-[100svh] h-fit bg-[#252424] flex flex-col items-center justify-end">
+        <Image
+          src={imageData?.location}
+          width={300}
+          height={300}
+          priority
+          quality={100}
+          alt={imageData?.name}
+          className="mt-32"
+        />
+        <div className="w-[60%] h-1 bg-white rounded-lg m-2 mt-5"> </div>
+        <NameComp
+          oldValue={imageData?.name}
+          newValue={name}
+          valueUpdater={setName}
+          table={
+            Array.isArray(tableName) ? "" : (tableName?.toLowerCase() as string)
+          }
+          id={Array.isArray(imageId) || imageId === undefined ? "" : imageId}
+        />
+        <DescriptionComp
+          oldValue={imageData?.description}
+          newValue={description}
+          valueUpdater={setDescription}
+          table={
+            Array.isArray(tableName) ? "" : (tableName?.toLowerCase() as string)
+          }
+          id={Array.isArray(imageId) || imageId === undefined ? "" : imageId}
+        />
+        <div className="mt-8  p-3 flex flex-col items-center justify-center gap-4 ">
+          <h1 className="text-5xl font-righteous text-white">
+            Likes:{" "}
+            <span className="text-[#BD4C67]">{imageData.likes.length}</span>
+          </h1>
+        </div>
+        <FavoritesComp
+          value={favorites}
+          valueUpdater={setFavorites}
+          flag={favoritesFlag}
+          flagUpdater={setFavoritesFlag}
+          id={id}
+          imageId={imageData.uid}
+          imageObj={favoritesObj}
+        />
+        <DeleteComp
+          imageId={
+            Array.isArray(imageId) ? "" : (imageId?.toLowerCase() as string)
+          }
+          table={
+            Array.isArray(tableName) ? "" : (tableName?.toLowerCase() as string)
+          }
+          favoriteCheck={favoriteCheck}
+          favoriteUpdater={setDeleteComp}
+          valueUpdater={setImages}
+          value={images}
+          id={id}
+        />
+      </div>
+    </React.Fragment>
   );
 }
 
@@ -222,4 +330,136 @@ const DescriptionComp: React.FC<CompProps> = ({
   );
 };
 
+const FavoritesComp: React.FC<FavoriteProps> = ({
+  value,
+  valueUpdater,
+  flag,
+  flagUpdater,
+  id,
+  imageObj,
+  imageId,
+}) => {
+  const user = useUser();
+  const [favoritesLength, setFavoritesLength] = useState(false);
+  const [favoritesUpdated, setFavoritesUpdated] = useState(false);
+  const handleFavorites = () => {
+    if (flag) {
+      valueUpdater(
+        value.filter((e) => e.uid != imageId || e.table != imageObj.table)
+      );
+
+      flagUpdater(false);
+    } else {
+      if (favoritesLength) return;
+      valueUpdater([...value, imageObj]);
+      flagUpdater(true);
+    }
+  };
+
+  useEffect(() => {
+    if (id !== 0) {
+      fetch(
+        `/api/updateArtistFavorites?id=${id}&value=${JSON.stringify(value)}`
+      ).then(() => {
+        reFetchArtistData(user?.id);
+      });
+    }
+  }, [value, id]);
+
+  useEffect(() => {
+    value.forEach((e) => {
+      if (e.uid == imageId && e.table == imageObj.table) {
+        flagUpdater(true);
+      }
+    });
+  }, [value, imageId, imageObj.table]);
+
+  useEffect(() => {
+    if (value.length >= 5) setFavoritesLength(true);
+  }, [value]);
+
+  return (
+    <div className="mb-3 pt-5">
+      <h1
+        className={`${
+          flag
+            ? "bg-red-400 hover:text-red-400 hover:bg-white "
+            : "bg-green-400 hover:text-green-400 hover:bg-white "
+        } p-3 text-white text-2xl font-righteous rounded-lg transition-all ease-in-out duration-500 hover:cursor-pointer`}
+        onClick={handleFavorites}
+      >
+        {flag
+          ? "Remove from Favorites"
+          : favoritesLength
+          ? "Favorites Full"
+          : "Add to Favorites"}
+      </h1>
+    </div>
+  );
+};
+
+const DeleteComp: React.FC<DeleteProps> = ({
+  imageId,
+  table,
+  favoriteCheck,
+  favoriteUpdater,
+  value,
+  valueUpdater,
+  id,
+}) => {
+  const user = useUser();
+  const router = useRouter();
+  const [updated, setUpdated] = useState(false);
+
+  const handleImageDelete = () => {
+    if (favoriteCheck) {
+      favoriteUpdater(true);
+      return;
+    }
+
+    fetch(`/api/deleteImage?id=${imageId}&table=${table}&uid=${user?.id}`).then(
+      (e) => {
+        e.json().then((e) => {
+          setUpdated(true);
+          if (e.message == "success") {
+            valueUpdater(
+              value.filter(
+                (e) => e.uid != parseInt(imageId) || e.table != table
+              )
+            );
+          } else if (e.message == "failed") {
+            router.push("/artist/denied");
+          }
+        });
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (updated) {
+      if (id !== 0) {
+        fetch(
+          `/api/updateArtistImages?id=${id}&value=${JSON.stringify(value)}`
+        ).then(() => {
+          reFetchArtistData(user?.id).then(() => {
+            router.push("/artist/manage");
+          });
+        });
+      }
+    }
+  }, [value, id, updated]);
+
+  return (
+    <div className="mb-3 pt-5">
+      <h1
+        className={
+          "bg-red-400 hover:text-red-400 hover:bg-white p-3 text-white text-2xl font-righteous rounded-lg transition-all ease-in-out duration-500 hover:cursor-pointer"
+        }
+        onClick={handleImageDelete}
+      >
+        Delete Image
+      </h1>
+    </div>
+  );
+};
 export default ImageComp;

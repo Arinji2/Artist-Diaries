@@ -24,7 +24,8 @@
     "**/*.tsx",
     "pages/prototypes/auth.jsx",
     "pages/topics/[tableName]",
-    "components/Account/login.jsx"
+    "components/Account/login.jsx",
+    "components/manage/favorites.jsx"
   ],
   "exclude": ["node_modules"]
 }

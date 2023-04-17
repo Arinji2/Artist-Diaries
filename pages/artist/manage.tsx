@@ -6,6 +6,7 @@ import {
 import { faEdit, faCheck } from "@fortawesome/fontawesome-free-solid";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useUser } from "@supabase/auth-helpers-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -23,6 +24,13 @@ interface Item {
   likes: number;
   description: string;
 }
+
+export const reFetchArtistData = async (id: any) => {
+  const data = await fetch(`/api/fetchArtist?id=${id}`);
+  const formattedData = await data.json();
+
+  localStorage.setItem("artist", JSON.stringify(formattedData[0]));
+};
 const getImageData = async (table: String, uid: Number) => {
   const response = await fetch(`/api/fetchImage?table=${table}&uid=${uid}`);
   var data = await response.json();
@@ -54,8 +62,10 @@ function Manage() {
 
 const PersonalInfo: React.FC<ChildProps> = ({ artist }) => {
   const router = useRouter();
+  const user = useUser();
   const [edit, setEdit] = useState(false);
   const [name, setName] = useState<string>("");
+
   return (
     <div className="w-full md:w-[70%] h-fit bg-[#440212] flex flex-col items-center md:items-start justify-center rounded-lg shadow-lg shadow-black relative">
       <FontAwesomeIcon
@@ -87,10 +97,10 @@ const PersonalInfo: React.FC<ChildProps> = ({ artist }) => {
               }
               const id = artist?.id?.toString();
               fetch(`/api/updateName?name=${name}&id=${id}`).then(() => {
-                fetch(`/api/fetchArtist?id=${artist?.id}`)
+                fetch(`/api/fetchArtist?id=${user?.id}`)
                   .then((res) => res.json())
                   .then((data) => {
-                    localStorage.setItem("artist", JSON.stringify(data));
+                    localStorage.setItem("artist", JSON.stringify(data[0]));
                     router.reload();
                   });
               });
@@ -116,12 +126,16 @@ const Favorites: React.FC<ChildProps> = ({ artist }) => {
     if (artist === null || undefined) return;
 
     artist.favorites.forEach((favorite) => {
-      const data = getImageData(favorite.table, favorite.uid);
-      data.then((data) => {
-        setFavoritesArray((prev) => [...prev, data]);
+      const data = getImageData(favorite?.table, favorite?.uid);
+      data.then((res) => {
+        setFavoritesArray((prev) => [...prev, res]);
       });
     });
   }, [artist]);
+
+  useEffect(() => {
+    // console.log(favoritesArray);
+  }, [favoritesArray]);
 
   const Cards: React.FC<Props> = ({ data }) => {
     return (
@@ -153,7 +167,8 @@ const Favorites: React.FC<ChildProps> = ({ artist }) => {
       </h2>
       <div className="flex flex-row items-center justify-evenly w-full shrink-0 pb-10 flex-wrap gap-5">
         {favoritesArray.map((favorite) => {
-          return <Cards data={favorite} key={favorite.uid} />;
+          //    console.log(favorite);
+          return <Cards data={favorite} key={favorite.location} />;
         })}
       </div>
     </div>
@@ -172,7 +187,9 @@ const Images: React.FC<ChildProps> = ({ artist }) => {
 
     artist.images.forEach((image) => {
       const data = getImageData(image.table, image.uid);
+
       data.then((data) => {
+        if (data === undefined) console.log(image.table, image.uid);
         setImagesArray((prev) => [...prev, data]);
 
         const string = data.location.split("/")[4];
@@ -210,9 +227,6 @@ const Images: React.FC<ChildProps> = ({ artist }) => {
     );
   };
 
-  useEffect(() => {
-    console.log(imagesArray);
-  }, [imagesArray]);
   return (
     <div className="w-full min-h-[100svh] h-fit bg-[#960226] flex flex-col items-center justify-start">
       <h1 className="text-[60px] md:text-[70px] font-righteous text-[#D9D9D9] mt-20">
@@ -223,7 +237,9 @@ const Images: React.FC<ChildProps> = ({ artist }) => {
       </p>
       <div className="flex flex-row items-center justify-evenly w-full shrink-0 pb-10 flex-wrap gap-5">
         {imagesArray.map((favorite, i) => {
-          return <Cards data={favorite} key={favorite.uid} index={i} />;
+          //  console.log(favorite);
+
+          return <Cards data={favorite} key={favorite.location} index={i} />;
         })}
       </div>
     </div>

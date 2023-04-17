@@ -7,11 +7,12 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const id = req.query.id as string;
+  const table = req.query.table as string;
 
   const { data, error } = await supabase
-    .from("artists")
-    .select("*")
-    .eq("user_id", id);
+    .from(table)
+    .select("artist")
+    .eq("uid", id);
 
   if (error) {
     console.error(error);
