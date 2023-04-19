@@ -43,9 +43,9 @@ const Fantasy: NextPage<any> = ({ serverRes }) => {
 
   useEffect(() => {
     if (intersection && intersection.isIntersecting && !fetching) {
-      fetchData();
+      if (!end) fetchData();
     }
-  }, [intersection, fetching]);
+  }, [intersection, fetching, end]);
 
   return (
     <div className="min-h-[100svh] h-fit w-full flex flex-col items-center justify-center text-black bg-[#D9D9D9]">
