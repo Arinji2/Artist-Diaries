@@ -167,7 +167,7 @@ const Favorites: React.FC<ChildProps> = ({ artist }) => {
       </h2>
       <div className="flex flex-row items-center justify-evenly w-full shrink-0 pb-10 flex-wrap gap-5">
         {favoritesArray.map((favorite) => {
-          //    console.log(favorite);
+          console.log(favorite);
           return <Cards data={favorite} key={favorite.location} />;
         })}
       </div>

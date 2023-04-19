@@ -69,7 +69,7 @@ const Charcoal: NextPage<any> = ({ serverRes }) => {
 
 export async function getServerSideProps() {
   const res = await fetch(
-    `${process.env.API_DOMAIN}/api/fetchTopics?table=charcoal&offset=0`
+    `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/fetchTopics?table=charcoal&offset=0`
   );
   const serverRes: Item = await res.json();
   return {

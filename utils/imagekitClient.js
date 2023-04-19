@@ -1,6 +1,7 @@
-import ImageKit from "imagekit-javascript";
+import ImageKit from "imagekit";
 
-export const imagekit = new ImageKit({
-  publicKey: process.env.IMAGEKIT_PUBLIC,
-  urlEndpoint: "https://ik.imagekit.io/arinji",
+export var imageKit = new ImageKit({
+  publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC,
+  privateKey: process.env.NEXT_PUBLIC_IMAGEKIT_PRIVATE,
+  urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_LINK,
 });

@@ -48,6 +48,7 @@ interface DeleteProps {
   valueUpdater: (newValue: ImageInterface[]) => void;
   value: ImageInterface[];
   id: number;
+  name: string;
 }
 
 function ImageComp() {
@@ -183,6 +184,7 @@ function ImageComp() {
           valueUpdater={setImages}
           value={images}
           id={id}
+          name={imageData.name}
         />
       </div>
     </React.Fragment>
@@ -406,6 +408,7 @@ const DeleteComp: React.FC<DeleteProps> = ({
   value,
   valueUpdater,
   id,
+  name,
 }) => {
   const user = useUser();
   const router = useRouter();
@@ -436,15 +439,19 @@ const DeleteComp: React.FC<DeleteProps> = ({
   };
 
   useEffect(() => {
+    const deleteFiles = async () => {
+      console.log("run");
+      await fetch(
+        `/api/updateArtistImages?id=${id}&value=${JSON.stringify(value)}`
+      );
+      await fetch(`/api/imageKit/deleteFile?fileName=${name}`);
+      await reFetchArtistData(user?.id);
+      router.push("/artist/manage");
+    };
+
     if (updated) {
       if (id !== 0) {
-        fetch(
-          `/api/updateArtistImages?id=${id}&value=${JSON.stringify(value)}`
-        ).then(() => {
-          reFetchArtistData(user?.id).then(() => {
-            router.push("/artist/manage");
-          });
-        });
+        deleteFiles();
       }
     }
   }, [value, id, updated]);
