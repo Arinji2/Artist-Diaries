@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { imageKit } from "@/utils/imageKitClient";
+import { imageKit } from "../../../utils/imagekitClientInit";
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
