@@ -3,7 +3,12 @@ import { SessionContextProvider } from "@supabase/auth-helpers-react";
 import type { AppProps } from "next/app";
 import Navbar from "../components/navbar";
 import { Brokman } from "../fonts/Brokman";
-import { laila, righteous, hammersmith_one } from "../fonts/googleFonts";
+import {
+  laila,
+  righteous,
+  hammersmith_one,
+  dongle,
+} from "../fonts/googleFonts";
 import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
 
@@ -17,7 +22,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <div
-      className={`${Brokman} ${righteous.variable} ${hammersmith_one.variable} ${laila.variable}`}
+      className={`${Brokman} ${righteous.variable} ${hammersmith_one.variable} ${laila.variable} ${dongle.variable}`}
     >
       <Navbar />
       <SessionContextProvider

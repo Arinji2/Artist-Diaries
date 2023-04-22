@@ -14,6 +14,7 @@ module.exports = {
         righteous: ["var(--font-Righteous)", ...fontFamily.sans],
         hammersmith: ["var(--font-Hammersmith)", ...fontFamily.sans],
         laila: ["var(--font-Laila)", ...fontFamily.sans],
+        dongle: ["var(--font-Dongle)", ...fontFamily.sans],
       },
     },
   },

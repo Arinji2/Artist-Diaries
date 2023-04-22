@@ -5,6 +5,8 @@ export interface Artist {
   email: String;
   images: Image[];
   favorites: Image[];
+  about: String;
+  profile_image: String;
 }
 
 export interface Image {
@@ -24,6 +26,8 @@ export const parseLocalStorageData = () => {
       email: "",
       images: [],
       favorites: [],
+      about: "",
+      profile_image: "",
     };
 
   const jsonData: Artist = JSON.parse(rawData);
