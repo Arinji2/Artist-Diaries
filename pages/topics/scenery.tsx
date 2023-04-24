@@ -10,6 +10,8 @@ interface Item {
   artist: number;
   likes: number;
   description: string;
+  width: string;
+  height: string;
 }
 
 const Scenery: NextPage<any> = ({ serverRes }) => {
@@ -53,9 +55,17 @@ const Scenery: NextPage<any> = ({ serverRes }) => {
         Scenery
       </h1>
 
-      <div className="w-full h-full flex flex-row flex-wrap items-center justify-evenly gap-5">
+      <div className="w-full h-full flex flex-wrap items-start justify-center">
         {data.map((item) => (
-          <Card key={item.uid} item={item} tableName={tableName} />
+          <div className="">
+            <Card
+              key={item.uid}
+              item={item}
+              tableName={tableName}
+              width={item.width}
+              height={item.height}
+            />
+          </div>
         ))}
       </div>
       <div ref={endOfPageRef}>
