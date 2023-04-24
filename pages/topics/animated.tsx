@@ -56,13 +56,7 @@ const Animated: NextPage<any> = ({ serverRes }) => {
 
       <div className="w-full h-full flex flex-row flex-wrap items-center justify-center gap-2 ">
         {data.map((item) => (
-          <Card
-            key={item.uid}
-            item={item}
-            tableName={tableName}
-            width={item.width}
-            height={item.height}
-          />
+          <Card key={item.uid} item={item} tableName={tableName} />
         ))}
       </div>
       <div ref={endOfPageRef}>

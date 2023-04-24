@@ -22,6 +22,8 @@ interface ImageData {
   location: string;
   artist: number;
   likes: string[];
+  width: string;
+  height: string;
 }
 
 const ImagePage: React.FC = () => {
@@ -33,7 +35,11 @@ const ImagePage: React.FC = () => {
     location: "",
     artist: 0,
     likes: [],
+    width: "0px",
+    height: "0px",
   });
+  const [widthLoc, setWidthLoc] = useState<string>("0px");
+  const [heightLoc, setHeightLoc] = useState<string>("0px");
   const [like, setLike] = useState<boolean>(false);
   const [likes, setLikes] = useState<number>(0);
   const [artistData, setArtistData] = useState<any>({});
@@ -109,14 +115,40 @@ const ImagePage: React.FC = () => {
     });
   }, 1000);
 
+  useEffect(() => {
+    //check for mobile device
+
+    var widthLoc = Number.parseInt(imageData.width);
+    var heightLoc = Number.parseInt(imageData.height);
+
+    widthLoc = Math.round(widthLoc > 1000 ? widthLoc * 0.3 : widthLoc * 0.9);
+    heightLoc = Math.round(
+      heightLoc > 1000 ? heightLoc * 0.3 : heightLoc * 0.9
+    );
+
+    if (window.innerWidth < 768) {
+      widthLoc = window.innerWidth - 50;
+      heightLoc = Math.round(
+        heightLoc > window.innerHeight
+          ? window.innerHeight - 100
+          : heightLoc * 0.7
+      );
+    }
+    setWidthLoc(widthLoc.toString().concat("px"));
+    setHeightLoc(heightLoc.toString().concat("px"));
+  }, [imageData.width, imageData.height]);
+
   return (
-    <div className="relative w-full min-h-[100vh] h-fit bg-[#1A2020] flex flex-col items-center justify-start">
+    <div className="relative w-full min-h-[100vh] h-fit bg-[#1A2020] flex flex-col items-center justify-center">
       <LoginComp flag={loggedIn} setter={setLoggedIn} />
       <VerifyComp flag={verified} setter={setVerified} />
       <div className=" mt-36"></div>
       <div className="w-full h-full flex flex-col items-center justify-center gap-y-10 md:flex-row  md:justify-evenly m-5 relative">
         {imageLoading ? (
-          <div className="md:w-[500px] md:h-[500px] w-[70%] h-[300px] relative rounded-lg md:ml-5 flex flex-col items-center justify-center z-40">
+          <div
+            className=" relative rounded-lg md:ml-5 flex flex-col items-center justify-center z-40"
+            style={{ width: widthLoc, height: heightLoc }}
+          >
             <Oval
               color="#960226"
               secondaryColor="transparent"
@@ -129,9 +161,10 @@ const ImagePage: React.FC = () => {
           <></>
         )}
         <div
-          className={`md:w-[500px] md:h-[500px] w-[70%] h-[300px] ${
+          className={` ${
             imageLoading ? " absolute hidden" : " relative block"
           } rounded-lg md:ml-5 flex flex-col items-center justify-center transition-all ease-in-out duration-300`}
+          style={{ width: widthLoc, height: heightLoc }}
         >
           <Image
             src={imageData?.location}
