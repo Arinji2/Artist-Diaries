@@ -51,7 +51,7 @@ export const Card: React.FC<CardProps> = ({
     }
     setWidthLoc(widthLoc.toString().concat("px"));
     setHeightLoc(heightLoc.toString().concat("px"));
-  }, []);
+  }, [width, height]);
 
   return (
     <Link href={`/topics/${tableName}/${item.uid}`}>
