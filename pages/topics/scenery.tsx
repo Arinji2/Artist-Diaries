@@ -58,13 +58,7 @@ const Scenery: NextPage<any> = ({ serverRes }) => {
       <div className="w-full h-full flex flex-wrap items-start justify-center">
         {data.map((item) => (
           <div className="">
-            <Card
-              key={item.uid}
-              item={item}
-              tableName={tableName}
-              width={item.width}
-              height={item.height}
-            />
+            <Card key={item.uid} item={item} tableName={tableName} />
           </div>
         ))}
       </div>
