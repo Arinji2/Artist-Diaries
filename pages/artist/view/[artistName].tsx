@@ -144,7 +144,7 @@ const View: NextPage<Props> = ({ data }) => {
         </div>
       ) : null}
       <div className="w-full h-fit bg-[#FFFFFF]">
-        <div className="mt-36 md:mt-0">
+        <div className="mt-36 md:mt-36 h-[100svh]">
           <ImageComp
             image={data.profile_image}
             title={data.name}
