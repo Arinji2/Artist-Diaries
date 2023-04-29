@@ -23,7 +23,7 @@ interface Image {
   likes: number;
   description: string;
 }
-const Artists: NextPage<any> = ({ serverRes }) => {
+const Supporters: NextPage<any> = ({ serverRes }) => {
   useEffect(() => {
     console.log(serverRes);
   }, []);
@@ -38,7 +38,7 @@ const Artists: NextPage<any> = ({ serverRes }) => {
     rootMargin: "0px",
     threshold: 1,
   });
-  const tableName = "artists";
+  const tableName = "supporters";
   async function fetchData() {
     setFetching(true);
     const res = await fetch(
@@ -64,7 +64,7 @@ const Artists: NextPage<any> = ({ serverRes }) => {
   return (
     <div className="min-h-[100svh] h-fit w-full flex flex-col items-center justify-center text-black bg-[#D9D9D9]">
       <h1 className="text-[60px] md:text-[70px] font-righteous text-[#960226] mt-32">
-        Artists
+        Supporters
       </h1>
 
       <div className="w-full h-full flex flex-row flex-wrap items-center justify-center gap-2 ">
@@ -93,7 +93,7 @@ const Artists: NextPage<any> = ({ serverRes }) => {
 
 export async function getStaticProps() {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/fetchTopics?table=artists&offset=0`
+    `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/fetchTopics?table=supporters&offset=0`
   );
   const serverRes: Artist = await res.json();
   return {
@@ -104,4 +104,4 @@ export async function getStaticProps() {
   };
 }
 
-export default Artists;
+export default Supporters;
