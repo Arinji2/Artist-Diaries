@@ -265,13 +265,17 @@ export default function Home() {
           <PeopleComponent
             title="Artists"
             image="/artists.jpg"
-            location="/artists"
+            location="/people/artists"
           />
-          <PeopleComponent title="Staff" image="/staff.jpg" location="/staff" />
+          <PeopleComponent
+            title="Staff"
+            image="/staff.jpg"
+            location="/people/staff"
+          />
           <PeopleComponent
             title="Supporters"
             image="/supporters.jpg"
-            location="/supporters"
+            location="/people/supporters"
           />
         </div>
       </div>
