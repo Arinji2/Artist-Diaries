@@ -2,20 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { useIntersection } from "react-use";
 import type { NextPage } from "next";
 import { Card } from "@/components/topics/Card";
+import type { Image } from "@/utils/types";
 
-interface Item {
-  uid: number;
-  name: string;
-  location: string;
-  artist: number;
-  likes: number;
-  description: string;
-  width: string;
-  height: string;
-}
-
-const Nature: NextPage<any> = ({ serverRes }) => {
-  const [data, setData] = useState<Item[]>([...serverRes]);
+const Page: NextPage<any> = ({ serverRes }) => {
+  const [data, setData] = useState<Image[]>([...serverRes]);
   const [offset, setOffset] = useState<number>(5);
   const [end, setEnd] = useState<boolean>(false);
 
@@ -26,11 +16,10 @@ const Nature: NextPage<any> = ({ serverRes }) => {
     rootMargin: "0px",
     threshold: 1,
   });
-  const tableName = "nature";
   async function fetchData() {
     setFetching(true);
     const res = await fetch(
-      `/api/fetchTopics?table=${tableName}&offset=${offset}`
+      `/api/supabase/fetch/paginatedTableFetch?table=${"nature"}&offset=${offset}`
     );
     var newData = await res.json();
     setData((prevData) => [...prevData, ...newData]);
@@ -47,7 +36,7 @@ const Nature: NextPage<any> = ({ serverRes }) => {
     if (intersection && intersection.isIntersecting && !fetching) {
       if (!end) fetchData();
     }
-  }, [intersection, fetching, end]);
+  }, [intersection, fetching, end, fetchData]);
 
   return (
     <div className="min-h-[100svh] h-fit w-full flex flex-col items-center justify-center text-black bg-[#D9D9D9]">
@@ -57,7 +46,7 @@ const Nature: NextPage<any> = ({ serverRes }) => {
 
       <div className="w-full h-full flex flex-row flex-wrap items-center justify-center gap-2 ">
         {data.map((item) => (
-          <Card key={item.uid} item={item} tableName={tableName} />
+          <Card key={item.uid} item={item} tableName={"nature"} />
         ))}
       </div>
       <div ref={endOfPageRef}>
@@ -69,16 +58,17 @@ const Nature: NextPage<any> = ({ serverRes }) => {
   );
 };
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/fetchTopics?table=nature&offset=0`
+    `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/supabase/fetch/paginatedTableFetch?table=nature&offset=0`
   );
-  const serverRes: Item = await res.json();
+  const serverRes: Image = await res.json();
   return {
     props: {
       serverRes,
     },
+    revalidate: 3600,
   };
 }
 
-export default Nature;
+export default Page;

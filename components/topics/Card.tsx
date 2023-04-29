@@ -2,17 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Oval } from "react-loader-spinner";
-interface Item {
-  uid: number;
-  name: string;
-  location: string;
-  artist: number;
-  likes: number;
-  description: string;
-}
+import type { Image as ImageType } from "@/utils/types";
 
 interface CardProps {
-  item: Item;
+  item: ImageType;
   tableName: string;
 }
 
