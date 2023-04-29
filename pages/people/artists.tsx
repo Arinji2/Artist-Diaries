@@ -69,9 +69,12 @@ const Artists: NextPage<any> = ({ serverRes }) => {
 
       <div className="w-full h-full flex flex-row flex-wrap items-center justify-center gap-2 ">
         {data.map((item) => (
-          <Link className="w-fit h-fit" href={`/artist/view/${item.name}`}>
+          <Link
+            className="w-fit h-fit"
+            key={item.id}
+            href={`/artist/view/${item.name}`}
+          >
             <Card
-              key={item.id}
               about={item.about}
               image={item.profile_image}
               name={item.name}
