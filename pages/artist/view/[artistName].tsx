@@ -420,6 +420,7 @@ export async function getStaticPaths() {
     `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/fetchAllArtistNames`
   );
   const jsonData = await res.json();
+
   const paths = jsonData.map((artist: any) => ({
     params: { artistName: artist.name },
   }));
