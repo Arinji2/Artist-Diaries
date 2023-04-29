@@ -1,8 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from "react";
 import { useIntersection } from "react-use";
 import type { NextPage } from "next";
 import { Card } from "@/components/topics/Card";
 import type { Image } from "@/utils/types";
+import { fetchPaginatedData } from "@/utils/fetchFunc";
 
 const Page: NextPage<any> = ({ serverRes }) => {
   const [data, setData] = useState<Image[]>([...serverRes]);
@@ -59,10 +61,7 @@ const Page: NextPage<any> = ({ serverRes }) => {
 };
 
 export async function getStaticProps() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/supabase/fetch/paginatedTableFetch?table=animated&offset=0`
-  );
-  const serverRes: Image = await res.json();
+  const serverRes = await fetchPaginatedData("animated", "0");
   return {
     props: {
       serverRes,

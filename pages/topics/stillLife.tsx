@@ -3,6 +3,7 @@ import { useIntersection } from "react-use";
 import type { NextPage } from "next";
 import { Card } from "@/components/topics/Card";
 import type { Image } from "@/utils/types";
+import { fetchPaginatedData } from "@/utils/fetchFunc";
 
 const Page: NextPage<any> = ({ serverRes }) => {
   const [data, setData] = useState<Image[]>([...serverRes]);
@@ -36,7 +37,7 @@ const Page: NextPage<any> = ({ serverRes }) => {
     if (intersection && intersection.isIntersecting && !fetching) {
       if (!end) fetchData();
     }
-  }, [intersection, fetching, end, fetchData]);
+  }, [intersection, fetching, end]);
 
   return (
     <div className="min-h-[100svh] h-fit w-full flex flex-col items-center justify-center text-black bg-[#D9D9D9]">
@@ -59,10 +60,7 @@ const Page: NextPage<any> = ({ serverRes }) => {
 };
 
 export async function getStaticProps() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/supabase/fetch/paginatedTableFetch?table=stilllife&offset=0`
-  );
-  const serverRes: Image = await res.json();
+  const serverRes = await fetchPaginatedData("stilllife", "0");
   return {
     props: {
       serverRes,
