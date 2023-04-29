@@ -401,18 +401,32 @@ const SearchComp: FC<SearchProps> = ({
     </div>
   );
 };
-export async function getServerSideProps(context: any) {
+export async function getStaticProps(context: any) {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/fetchArtistViaName?name=${context.params.artistName}`
   );
-
   const jsonData = await res.json();
+  const data = jsonData.length > 0 ? jsonData[0] : { name: "null" };
 
-  var data = jsonData.length > 0 ? jsonData[0] : { name: "null" };
   return {
     props: {
       data,
     },
+    revalidate: 3600,
+  };
+}
+export async function getStaticPaths() {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/fetchAllArtistNames`
+  );
+  const jsonData = await res.json();
+  const paths = jsonData.map((artist: any) => ({
+    params: { artistName: artist.name },
+  }));
+
+  return {
+    paths,
+    fallback: true,
   };
 }
 
