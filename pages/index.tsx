@@ -313,7 +313,6 @@ export default function Home() {
           fill
           quality={100}
           className="object-cover absolute"
-          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
           {...(Image as any).defaultImageProps}
         />
 
