@@ -88,11 +88,11 @@ const Artists: NextPage<any> = ({ serverRes }) => {
   );
 };
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/fetchTopics?table=artists&offset=0`
   );
-  const serverRes: Item = await res.json();
+  const serverRes: Artist = await res.json();
   return {
     props: {
       serverRes,
