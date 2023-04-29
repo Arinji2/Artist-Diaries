@@ -9,6 +9,7 @@ export default async function handler(
   var id = req.query.id as string;
   var value = req.query.value as string;
   var formattedValue = JSON.parse(value);
+
   const { data, error } = await supabase
     .from("artists")
     .update({ images: formattedValue })

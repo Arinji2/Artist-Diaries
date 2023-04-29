@@ -22,6 +22,9 @@ function Upload() {
   const buttonRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [uploaded, setUploaded] = useState(false);
+  const [width, setWidth] = useState("");
+  const [height, setHeight] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [topic, setTopic] = useState("");
@@ -42,7 +45,6 @@ function Upload() {
   }, []);
 
   const handleError = async () => {
-    const id = Math.round(Math.random() * 1000);
     if (name === "") {
       setError({
         error: true,
@@ -57,24 +59,38 @@ function Upload() {
       return;
     }
 
-    const value = {
-      link: `https://ik.imagekit.io/arinji/${topic}/${name}`,
-      table: topic.toLowerCase(),
-      uid: id,
-    };
-
-    const upload = JSON.stringify([...images, value]);
-
-    await fetch(
-      `/api/uploadImage?name=${name}&description=${description}&table=${topic}&userId=${user?.id}&id=${id}`
-    );
-
-    await fetch(`/api/updateArtistImages?value=${upload}&id=${artist}`);
-    reFetchArtistData(user?.id);
-
     if (buttonRef.current !== null)
       (buttonRef.current as HTMLInputElement).click();
   };
+
+  useEffect(() => {
+    const handleUpload = async () => {
+      var locWidth = width;
+      var locHeight = height;
+
+      locWidth = locWidth + "px";
+      locHeight = locHeight + "px";
+
+      const id = Math.round(Math.random() * 1000);
+      const value = {
+        link: `https://ik.imagekit.io/arinji/${topic}/${name}`,
+        table: topic.toLowerCase(),
+        uid: id,
+      };
+
+      const upload = JSON.stringify([...images, value]);
+
+      await fetch(
+        `/api/uploadImage?name=${name}&description=${description}&table=${topic}&userId=${user?.id}&id=${id}&width=${locWidth}&height=${locHeight}`
+      );
+
+      await fetch(`/api/updateArtistImages?value=${upload}&id=${artist}`);
+      reFetchArtistData(user?.id);
+      setSuccess(true);
+    };
+
+    if (uploaded) handleUpload();
+  }, [uploaded]);
 
   return (
     <div>
@@ -192,8 +208,9 @@ function Upload() {
               onUploadStart={() => setLoading(true)}
               onSuccess={(e) => {
                 setLoading(false);
-                setSuccess(true);
-                console.log(e);
+                setUploaded(true);
+                setWidth(e.width);
+                setHeight(e.height);
               }}
               style={{ display: "none" }}
               inputRef={buttonRef}

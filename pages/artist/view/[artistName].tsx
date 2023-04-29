@@ -1,3 +1,6 @@
+import { faHeart } from "@fortawesome/fontawesome-free-solid";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
@@ -46,6 +49,7 @@ interface ListProps {
   title: string;
   description: string;
   likes: number;
+  location: string;
 }
 
 interface SearchProps {
@@ -202,6 +206,7 @@ const View: NextPage<Props> = ({ data }) => {
                   description={image.description}
                   key={index}
                   likes={image.likes.length}
+                  location={image.location}
                 />
               );
             })
@@ -219,6 +224,7 @@ const View: NextPage<Props> = ({ data }) => {
                   description={image.description}
                   key={image.name}
                   likes={image.likes.length}
+                  location={image.location}
                 />
               );
             })}
@@ -283,7 +289,13 @@ const ImageComp: FC<CardProps> = ({ image, title, description, left }) => {
   );
 };
 
-const ImageList: FC<ListProps> = ({ image, title, description, likes }) => {
+const ImageList: FC<ListProps> = ({
+  image,
+  title,
+  description,
+  likes,
+  location,
+}) => {
   return (
     <div
       className="w-[95%] h-fit relative flex flex-col md:flex-row-reverse items-center justify-center gap-10 md:gap-5 bg-[#D9D9D9] p-5 mt-10"
@@ -296,7 +308,6 @@ const ImageList: FC<ListProps> = ({ image, title, description, likes }) => {
           fill
           quality={100}
           className="object-cover rounded-lg"
-          priority
         />
       </div>
       <div className="w-[90vw] h-[345px] md:hidden block relative mt-10">
@@ -306,7 +317,6 @@ const ImageList: FC<ListProps> = ({ image, title, description, likes }) => {
           fill
           quality={100}
           className="object-cover rounded-lg md:hidden block "
-          priority
         />
       </div>
 
@@ -319,9 +329,21 @@ const ImageList: FC<ListProps> = ({ image, title, description, likes }) => {
         <p className="text-[30px] font-normal text-[#161616] mt-2 ml-10  z-20 line-clamp-4 text-center">
           {description}
         </p>
-        <div className="w-full h-fit flex flex-col items-start justify-center text-black font-normal text-[30px] mt-10">
-          {" "}
-          <p>Likes: {likes}</p>
+        <p className="text-[30px] font-normal text-[#161616] mt-2 ml-10  z-20 line-clamp-4 text-center">
+          Topic:{" "}
+          {location.substring(
+            location.indexOf("/", 8) + 8,
+            location.lastIndexOf("/")
+          )}
+        </p>
+        <div className="w-[50%] h-fit  flex-row items-center justify-start gap-1 md:flex hidden">
+          <FontAwesomeIcon
+            icon={faHeart as IconProp}
+            className="w-[20px] h-[20px]"
+          />
+          <p className="text-2xl font-righteous text-[#161616] font-normal">
+            {likes}
+          </p>
         </div>
       </div>
       <div className="relative font-dongle bg-transparent w-full h-fit  flex-col items-center justify-start md:hidden flex">
@@ -331,7 +353,17 @@ const ImageList: FC<ListProps> = ({ image, title, description, likes }) => {
         <p className="text-[17px] font-normal text-[#454545] mt-2 text-center z-20 line-clamp-4 ">
           {description}
         </p>
+        <div className="w-[50%] h-fit flex flex-row items-center justify-start gap-1">
+          <FontAwesomeIcon
+            icon={faHeart as IconProp}
+            className="w-[20px] h-[20px]"
+          />
+          <p className="text-2xl font-righteous text-[#161616] font-normal">
+            {likes}
+          </p>
+        </div>
       </div>
+
       <div className="w-[95vw] h-[4px] md:hidden block bg-slate-400"></div>
     </div>
   );

@@ -11,6 +11,8 @@ export default async function handler(
   const table = req.query.table as string;
   const userId = req.query.userId as string;
   const id = req.query.id as string;
+  const width = req.query.width as string;
+  const height = req.query.height as string;
   const tableName = table.toLowerCase();
 
   const { data, error } = await supabase.from(tableName).insert({
@@ -20,6 +22,8 @@ export default async function handler(
     location: `https://ik.imagekit.io/arinji/${table}/${name}`,
     likes: [],
     artist: userId,
+    width: width,
+    height: height,
   });
 
   if (error) {
