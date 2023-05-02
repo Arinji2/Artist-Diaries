@@ -4,36 +4,23 @@ import { faThumbsUp } from "@fortawesome/fontawesome-free-solid";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useUser } from "@supabase/auth-helpers-react";
-import { GetServerSideProps } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Oval } from "react-loader-spinner";
 import debounce from "lodash/debounce";
-
-interface ImagePageProps {
-  imageData: any;
-  artistData: { name: string };
-}
-
-interface ImageData {
-  name: string;
-  description: string;
-  location: string;
-  artist: number;
-  likes: string[];
-  width: string;
-  height: string;
-}
+import type { Image as ImageDataType } from "@/utils/types";
+import { fetchArtistData, fetchImageData } from "@/utils/fetchFunc";
 
 const ImagePage: React.FC = () => {
   const user = useUser();
   const [imageLoading, setImageLoading] = useState<boolean>(true);
-  const [imageData, setImageData] = useState<ImageData>({
+  const [imageData, setImageData] = useState<ImageDataType>({
+    uid: 0,
     name: "",
     description: "",
     location: "",
-    artist: 0,
+    artist: "",
     likes: [],
     width: "0px",
     height: "0px",
@@ -50,21 +37,18 @@ const ImagePage: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log("Runs");
+      if (Array.isArray(tableName)) return;
+      if (Array.isArray(imageId)) return;
       if (imageId && tableName) {
-        const imageDataFetched = await fetch(
-          `/api/fetchImage?uid=${imageId}&table=${tableName}`
-        );
-        var imageData = await imageDataFetched.json();
+        const imageData = await fetchImageData(tableName, imageId);
 
-        if (imageData && imageData.length > 0) {
-          const artistDataFetched = await fetch(
-            `/api/fetchArtist?id=${imageData[0].artist}`
-          );
-          var artistData = await artistDataFetched.json();
-          setArtistData(artistData[0]);
-          setLikes(imageData[0].likes.length);
-          setImageData(imageData[0]);
-        }
+        if (typeof imageData !== "object") return;
+        const artistData = await fetchArtistData(imageData.artist);
+        console.log(imageData, artistData);
+        setArtistData(artistData);
+        setLikes(imageData.likes.length);
+        setImageData(imageData);
       }
     };
 
@@ -100,7 +84,7 @@ const ImagePage: React.FC = () => {
         setLike((prevLike) => !prevLike);
       }
     });
-  }, 1000);
+  }, 500);
 
   const handleLike = debounce(() => {
     const value = [...imageData.likes, user?.id];
@@ -113,11 +97,9 @@ const ImagePage: React.FC = () => {
         setLike((prevLike) => !prevLike);
       }
     });
-  }, 1000);
+  }, 500);
 
   useEffect(() => {
-    //check for mobile device
-
     var widthLoc = Number.parseInt(imageData.width);
     var heightLoc = Number.parseInt(imageData.height);
 
