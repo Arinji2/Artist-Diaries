@@ -1,6 +1,5 @@
 import Error from "next/error";
 import { supabase } from "./supabaseClient";
-import { Image, Error as ErrorType } from "./types";
 
 export const fetchPaginatedData = async (table: string, offset: string) => {
   const offsetNumber = parseInt(offset);
