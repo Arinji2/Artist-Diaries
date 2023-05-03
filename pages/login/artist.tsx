@@ -68,7 +68,7 @@ function ArtistLogin() {
               } else {
                 localStorage.setItem("artist", JSON.stringify(data[0]));
                 window.dispatchEvent(new Event("artistUpdated"));
-                router.push("/dashboard");
+                router.push("/artist/dashboard");
               }
             });
           })

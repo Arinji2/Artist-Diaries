@@ -36,7 +36,7 @@ function Page() {
               onSuccess={async (res) => {
                 await postImage(res.url, user?.id);
                 await postImageID(res.fileId, user?.id);
-                router.push("/dashboard");
+                router.push("/artist/dashboard");
               }}
             />
             {buttonRef && (
