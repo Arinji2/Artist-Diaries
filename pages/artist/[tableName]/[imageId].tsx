@@ -13,14 +13,7 @@ import { reFetchArtistData } from "../manage";
 import { useUser } from "@supabase/auth-helpers-react";
 import DeleteVerComp from "@/components/manage/favorites";
 import React from "react";
-interface Item {
-  uid: number;
-  name: string;
-  location: string;
-  artist: number;
-  likes: string[];
-  description: string;
-}
+import type { Image as ImageDataInterface } from "@/utils/types";
 
 interface CompProps {
   oldValue: string;
@@ -53,13 +46,15 @@ interface DeleteProps {
 
 function ImageComp() {
   const router = useRouter();
-  const [imageData, setImageData] = useState<Item>({
+  const [imageData, setImageData] = useState<ImageDataInterface>({
     uid: 0,
     name: "",
     location: "",
-    artist: 0,
+    artist: "",
     likes: [],
     description: "",
+    height: "",
+    width: "",
   });
   const [favoritesObj, setFavoritesObj] = useState<ImageInterface>({
     uid: 0,
