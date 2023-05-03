@@ -31,7 +31,7 @@ export const fetchImageData = async (table: string, id: string) => {
     console.error(error);
     return Error;
   } else {
-    return data as Image;
+    return data;
   }
 };
 
