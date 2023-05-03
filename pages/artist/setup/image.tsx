@@ -2,7 +2,7 @@ import Image from "next/image";
 import * as React from "react";
 import { useState, useEffect } from "react";
 import { useUser } from "@supabase/auth-helpers-react";
-import { postImage, postName } from "@/utils/postFunc";
+import { postImage, postImageID, postName } from "@/utils/postFunc";
 import { useRouter } from "next/router";
 import { IKContext, IKUpload } from "imagekitio-react";
 function Page() {
@@ -33,10 +33,10 @@ function Page() {
               useUniqueFileName={false}
               style={{ display: "none" }}
               inputRef={buttonRef}
-              onSuccess={(res) => {
-                postImage(res.url, user?.id).then(() => {
-                  router.push("/artist/dashboard");
-                });
+              onSuccess={async (res) => {
+                await postImage(res.url, user?.id);
+                await postImageID(res.fileId, user?.id);
+                router.push("/dashboard");
               }}
             />
             {buttonRef && (
