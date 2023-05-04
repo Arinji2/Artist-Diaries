@@ -200,13 +200,15 @@ const Images: React.FC<ChildProps> = ({ artist }) => {
       const data = getImageData(image.table, image.uid);
 
       data.then((data) => {
-        if (data === undefined) setImagesArray((prev) => [...prev, data]);
+        if (data !== undefined) setImagesArray((prev) => [...prev, data]);
 
         const string = data.location.split("/")[4];
         setTablesArray((prev) => [...prev, string]);
       });
     });
   }, [artist]);
+
+  useEffect(() => {}, [imagesArray]);
 
   const Cards: React.FC<Props> = ({ data, index }) => {
     return (
@@ -247,8 +249,6 @@ const Images: React.FC<ChildProps> = ({ artist }) => {
       </p>
       <div className="flex flex-row items-center justify-evenly w-full shrink-0 pb-10 flex-wrap gap-5">
         {imagesArray.map((favorite, i) => {
-          //
-
           return <Cards data={favorite} key={favorite.location} index={i} />;
         })}
       </div>
