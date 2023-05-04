@@ -98,7 +98,7 @@ export async function getStaticProps() {
   const serverRes: Artist[] = await res.json();
   var updatedRes: Artist[] = [];
   serverRes.forEach((item) => {
-    if (item.name !== "NULL") {
+    if (item.name !== null) {
       updatedRes.push(item);
     }
   });
