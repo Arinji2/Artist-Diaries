@@ -43,7 +43,6 @@ function ArtistLogin() {
   const handleLogin = () => {
     supabase.auth.signInWithPassword({ email, password }).then((res) => {
       if (res.error) {
-        console.log(res.error.message);
         if (res.error.message === "Invalid login credentials") {
           emailErrorHelper("Invalid login credentials");
           passwordErrorHelper("Invalid login credentials");
@@ -72,9 +71,7 @@ function ArtistLogin() {
               }
             });
           })
-          .catch((err) => {
-            console.log(err);
-          });
+          .catch((err) => {});
       }
     });
   };

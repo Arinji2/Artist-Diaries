@@ -84,8 +84,9 @@ function Upload() {
         `/api/uploadImage?name=${name}&description=${description}&table=${topic}&userId=${user?.id}&id=${id}&width=${locWidth}&height=${locHeight}`
       );
 
-      await fetch(`/api/updateArtistImages?value=${upload}&id=${artist}`);
-      reFetchArtistData(user?.id);
+      await fetch(`/api/updateArtistImages?value=${upload}&id=${user?.id}`);
+      await reFetchArtistData(user?.id);
+      setLoading(false);
       setSuccess(true);
     };
 
@@ -207,7 +208,6 @@ function Upload() {
               useUniqueFileName={false}
               onUploadStart={() => setLoading(true)}
               onSuccess={(e) => {
-                setLoading(false);
                 setUploaded(true);
                 setWidth(e.width);
                 setHeight(e.height);

@@ -9,7 +9,6 @@ export const postName = async (name: string, user_id: any) => {
     .eq("user_id", user_id);
 
   if (error) {
-    console.log(error);
   }
 };
 
@@ -22,7 +21,6 @@ export const postAbout = async (about: string, user_id: any) => {
     .eq("user_id", user_id);
 
   if (error) {
-    console.log(error);
   }
 };
 
@@ -35,7 +33,6 @@ export const postImage = async (link: string, user_id: any) => {
     .eq("user_id", user_id);
 
   if (error) {
-    console.log(error);
   }
 };
 
@@ -48,7 +45,6 @@ export const postImageID = async (id: string, user_id: any) => {
     .eq("user_id", user_id);
 
   if (error) {
-    console.log(error);
   }
 };
 
@@ -61,6 +57,5 @@ export const postEmail = async (email: string, user_id: any) => {
     .eq("user_id", user_id);
 
   if (error) {
-    console.log(error);
   }
 };

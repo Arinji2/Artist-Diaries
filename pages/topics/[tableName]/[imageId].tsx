@@ -37,7 +37,6 @@ const ImagePage: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log("Runs");
       if (Array.isArray(tableName)) return;
       if (Array.isArray(imageId)) return;
       if (imageId && tableName) {
@@ -45,7 +44,7 @@ const ImagePage: React.FC = () => {
 
         if (typeof imageData !== "object") return;
         const artistData = await fetchArtistData(imageData.artist);
-        console.log(imageData, artistData);
+
         setArtistData(artistData);
         setLikes(imageData.likes.length);
         setImageData(imageData);

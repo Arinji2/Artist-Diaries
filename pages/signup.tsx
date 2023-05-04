@@ -59,7 +59,6 @@ function Signup() {
       })
       .then((res) => {
         if (res.error) {
-          console.log(res.error.message);
           if (res.error.message === "Invalid login credentials") {
             emailErrorHelper("Invalid login credentials");
             passwordErrorHelper("Invalid login credentials");

@@ -106,7 +106,8 @@ function ImageComp() {
   useEffect(() => {
     const artistResp = parseLocalStorageData() as Artist;
     if (artistResp !== null) {
-      setFavorites(artistResp.favorites);
+      if (artistResp.favorites == null) setFavorites([]);
+      else setFavorites(artistResp.favorites);
       setImages(artistResp.images);
     }
   }, []);
@@ -364,11 +365,13 @@ const FavoritesComp: React.FC<FavoriteProps> = ({
   }, [value, id]);
 
   useEffect(() => {
-    value.forEach((e) => {
-      if (e.uid == imageId && e.table == imageObj.table) {
-        flagUpdater(true);
-      }
-    });
+    if (Array.isArray(value)) {
+      value.forEach((e) => {
+        if (e.uid == imageId && e.table == imageObj.table) {
+          flagUpdater(true);
+        }
+      });
+    }
   }, [value, imageId, imageObj.table]);
 
   useEffect(() => {
@@ -435,7 +438,6 @@ const DeleteComp: React.FC<DeleteProps> = ({
 
   useEffect(() => {
     const deleteFiles = async () => {
-      console.log("run");
       await fetch(
         `/api/updateArtistImages?id=${id}&value=${JSON.stringify(value)}`
       );

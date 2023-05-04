@@ -12,19 +12,14 @@ function Page({ countries }) {
       <button
         className="w-32 h-32 bg-red-500"
         onClick={() => {
-          console.log("Runs");
           supabase
             .from("artists")
             .insert({
               name: "test",
               email: "test@gmail.com",
             })
-            .then((data) => {
-              console.log(data);
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+            .then((data) => {})
+            .catch((error) => {});
         }}
       ></button>
     </div>

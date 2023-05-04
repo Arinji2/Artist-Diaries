@@ -13,10 +13,9 @@ export default async function handler(
   const { data, error } = await supabase
     .from("artists")
     .update({ images: formattedValue })
-    .eq("id", id);
+    .eq("user_id", id);
 
   if (error) {
-    console.log("Images", error);
     res.status(500).json({ error: "Failed to fetch data from Supabase" });
   } else {
     res.status(200).json(data);

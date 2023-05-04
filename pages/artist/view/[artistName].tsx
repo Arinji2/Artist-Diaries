@@ -78,7 +78,6 @@ const View: NextPage<Props> = ({ data }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   useEffect(() => {
-    console.log(data);
     if (data.name !== "null") setServerData(data);
     else setError(true);
   }, []);
@@ -129,7 +128,6 @@ const View: NextPage<Props> = ({ data }) => {
       setLoading(true);
       images.map((image) => {
         if (image.location.toLowerCase().includes(inputText.toLowerCase())) {
-          console.log(image.name, inputText);
           setSearchResult((prev) => [...prev, image]);
         }
       });

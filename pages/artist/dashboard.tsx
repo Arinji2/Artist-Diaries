@@ -17,7 +17,7 @@ function Dashboard() {
     const data = localStorage.getItem("artist");
     var parsedData;
     if (data !== null) parsedData = JSON.parse(data);
-    console.log(parsedData);
+
     if (parsedData.name == null) router.push("/artist/setup/name");
     setName(parsedData?.name);
   });

@@ -24,9 +24,7 @@ interface Image {
   description: string;
 }
 const Supporters: NextPage<any> = ({ serverRes }) => {
-  useEffect(() => {
-    console.log(serverRes);
-  }, []);
+  useEffect(() => {}, []);
   const [data, setData] = useState<Artist[]>([...serverRes]);
   const [offset, setOffset] = useState<number>(5);
   const [end, setEnd] = useState<boolean>(false);

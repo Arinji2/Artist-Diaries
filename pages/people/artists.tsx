@@ -24,9 +24,7 @@ interface Image {
   description: string;
 }
 const Artists: NextPage<any> = ({ updatedRes }) => {
-  useEffect(() => {
-    console.log(updatedRes);
-  }, []);
+  useEffect(() => {}, []);
   const [data, setData] = useState<Artist[]>([...updatedRes]);
   const [offset, setOffset] = useState<number>(5);
   const [end, setEnd] = useState<boolean>(false);

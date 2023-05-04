@@ -123,24 +123,22 @@ const Favorites: React.FC<ChildProps> = ({ artist }) => {
     data: Item;
   }
   const [favoritesArray, setFavoritesArray] = useState<Item[]>([]);
+  const [favorites, setFavorites] = useState(false);
   useEffect(() => {
     if (artist === null || undefined) return;
-    if (artist.favorites == null) {
-      router.push("/artist/dashboard");
+    if (artist.favorites == null || artist.favorites.length == 0) {
+      setFavorites(true);
       return;
     }
-
-    artist.favorites.forEach((favorite) => {
-      const data = getImageData(favorite?.table, favorite?.uid);
-      data.then((res) => {
-        setFavoritesArray((prev) => [...prev, res]);
+    if (!favorites) {
+      artist.favorites.forEach((favorite) => {
+        const data = getImageData(favorite?.table, favorite?.uid);
+        data.then((res) => {
+          setFavoritesArray((prev) => [...prev, res]);
+        });
       });
-    });
+    }
   }, [artist]);
-
-  useEffect(() => {
-    // console.log(favoritesArray);
-  }, [favoritesArray]);
 
   const Cards: React.FC<Props> = ({ data }) => {
     return (
@@ -166,15 +164,18 @@ const Favorites: React.FC<ChildProps> = ({ artist }) => {
   };
 
   return (
-    <div className="w-full min-h-[700px] h-fit">
+    <div className="w-full min-h-[200px] h-fit">
       <h2 className="text-[50px] md:text-[60px] font-righteous text-[#960226] mt-32">
         Favorites
       </h2>
       <div className="flex flex-row items-center justify-evenly w-full shrink-0 pb-10 flex-wrap gap-5">
-        {favoritesArray.map((favorite) => {
-          console.log(favorite);
-          return <Cards data={favorite} key={favorite.location} />;
-        })}
+        {!favorites ? (
+          favoritesArray.map((favorite) => {
+            return <Cards data={favorite} key={favorite.location} />;
+          })
+        ) : (
+          <h1 className="text-5xl font-righteous text-black">-------</h1>
+        )}
       </div>
     </div>
   );
@@ -199,8 +200,7 @@ const Images: React.FC<ChildProps> = ({ artist }) => {
       const data = getImageData(image.table, image.uid);
 
       data.then((data) => {
-        if (data === undefined) console.log(image.table, image.uid);
-        setImagesArray((prev) => [...prev, data]);
+        if (data === undefined) setImagesArray((prev) => [...prev, data]);
 
         const string = data.location.split("/")[4];
         setTablesArray((prev) => [...prev, string]);
@@ -247,7 +247,7 @@ const Images: React.FC<ChildProps> = ({ artist }) => {
       </p>
       <div className="flex flex-row items-center justify-evenly w-full shrink-0 pb-10 flex-wrap gap-5">
         {imagesArray.map((favorite, i) => {
-          //  console.log(favorite);
+          //
 
           return <Cards data={favorite} key={favorite.location} index={i} />;
         })}

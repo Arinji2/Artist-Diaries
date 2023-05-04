@@ -22,9 +22,7 @@ const Art: FC<PageProps> = ({ monthlyData }) => {
   const [widthLoc, setWidthLoc] = useState(0);
   const [heightLoc, setHeightLoc] = useState(0);
   const router = useRouter();
-  useEffect(() => {
-    console.log(monthlyData);
-  }, []);
+  useEffect(() => {}, []);
 
   useEffect(() => {
     //check for mobile device
