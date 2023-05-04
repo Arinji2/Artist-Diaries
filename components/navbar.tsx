@@ -6,6 +6,7 @@ import { faBars, faTimes } from "@fortawesome/fontawesome-free-solid";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useUser } from "@supabase/auth-helpers-react";
 import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
@@ -44,7 +45,6 @@ function Navbar() {
       link: "/showcase",
     },
   ]);
-
   useEffect(() => {
     const handleScroll = () => {
       var offset = window.scrollY;
@@ -71,6 +71,7 @@ function Navbar() {
   useEffect(() => {
     const handleChange = () => {
       const data = verifyArtist();
+      const res = parseLocalStorageData();
       if (data)
         setNavBarProps([
           {
@@ -83,7 +84,7 @@ function Navbar() {
           },
           {
             name: "View",
-            link: "/artist/view",
+            link: `/artist/view/${res?.name}`,
           },
         ]);
       else
