@@ -118,12 +118,17 @@ const PersonalInfo: React.FC<ChildProps> = ({ artist }) => {
 export default Manage;
 
 const Favorites: React.FC<ChildProps> = ({ artist }) => {
+  const router = useRouter();
   interface Props {
     data: Item;
   }
   const [favoritesArray, setFavoritesArray] = useState<Item[]>([]);
   useEffect(() => {
     if (artist === null || undefined) return;
+    if (artist.favorites == null) {
+      router.push("/artist/dashboard");
+      return;
+    }
 
     artist.favorites.forEach((favorite) => {
       const data = getImageData(favorite?.table, favorite?.uid);
@@ -176,6 +181,7 @@ const Favorites: React.FC<ChildProps> = ({ artist }) => {
 };
 
 const Images: React.FC<ChildProps> = ({ artist }) => {
+  const router = useRouter();
   interface Props {
     data: Item;
     index: number;
@@ -184,6 +190,10 @@ const Images: React.FC<ChildProps> = ({ artist }) => {
   const [tablesArray, setTablesArray] = useState<String[]>([]);
   useEffect(() => {
     if (artist === null || undefined) return;
+    if (artist.images == null) {
+      router.push("/artist/dashboard");
+      return;
+    }
 
     artist.images.forEach((image) => {
       const data = getImageData(image.table, image.uid);

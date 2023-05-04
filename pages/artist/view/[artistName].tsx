@@ -85,6 +85,10 @@ const View: NextPage<Props> = ({ data }) => {
 
   useEffect(() => {
     const fetchImages = async () => {
+      if (serverData.images == null || serverData.images.length == 0) {
+        setError(true);
+        return;
+      }
       serverData.images.map((image) => {
         fetch(
           `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/fetchImage?table=${image.table}&uid=${image.uid}`
@@ -97,6 +101,10 @@ const View: NextPage<Props> = ({ data }) => {
       });
     };
     const fetchFavorites = async () => {
+      if (serverData.favorites == null || serverData.favorites.length == 0) {
+        setError(true);
+        return;
+      }
       serverData.favorites.map((image) => {
         fetch(
           `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/fetchImage?table=${image.table}&uid=${image.uid}`

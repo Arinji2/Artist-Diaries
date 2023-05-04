@@ -2,9 +2,10 @@ import Image from "next/image";
 import * as React from "react";
 import { useState, useEffect } from "react";
 import { useUser } from "@supabase/auth-helpers-react";
-import { postImage, postImageID, postName } from "@/utils/postFunc";
+import { postEmail, postImage, postImageID, postName } from "@/utils/postFunc";
 import { useRouter } from "next/router";
 import { IKContext, IKUpload } from "imagekitio-react";
+import { reFetchArtistData } from "../manage";
 function Page() {
   const [name, setName] = useState("");
   const user = useUser();
@@ -36,6 +37,9 @@ function Page() {
               onSuccess={async (res) => {
                 await postImage(res.url, user?.id);
                 await postImageID(res.fileId, user?.id);
+                if (user?.email !== undefined)
+                  await postEmail(user?.email, user?.id);
+                await reFetchArtistData(user?.id);
                 router.push("/artist/dashboard");
               }}
             />

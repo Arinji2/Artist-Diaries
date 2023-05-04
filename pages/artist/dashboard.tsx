@@ -18,7 +18,7 @@ function Dashboard() {
     var parsedData;
     if (data !== null) parsedData = JSON.parse(data);
     console.log(parsedData);
-    if (parsedData.name == '""') router.push("/artist/setup/name");
+    if (parsedData.name == null) router.push("/artist/setup/name");
     setName(parsedData?.name);
   });
   return (

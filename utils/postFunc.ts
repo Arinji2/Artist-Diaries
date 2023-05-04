@@ -51,3 +51,16 @@ export const postImageID = async (id: string, user_id: any) => {
     console.log(error);
   }
 };
+
+export const postEmail = async (email: string, user_id: any) => {
+  const { error, data } = await supabase
+    .from("artists")
+    .update({
+      email: email,
+    })
+    .eq("user_id", user_id);
+
+  if (error) {
+    console.log(error);
+  }
+};
