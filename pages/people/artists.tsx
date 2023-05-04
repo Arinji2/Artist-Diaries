@@ -23,11 +23,11 @@ interface Image {
   likes: number;
   description: string;
 }
-const Artists: NextPage<any> = ({ serverRes }) => {
+const Artists: NextPage<any> = ({ updatedRes }) => {
   useEffect(() => {
-    console.log(serverRes);
+    console.log(updatedRes);
   }, []);
-  const [data, setData] = useState<Artist[]>([...serverRes]);
+  const [data, setData] = useState<Artist[]>([...updatedRes]);
   const [offset, setOffset] = useState<number>(5);
   const [end, setEnd] = useState<boolean>(false);
 
@@ -95,10 +95,16 @@ export async function getStaticProps() {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/fetchTopics?table=artists&offset=0`
   );
-  const serverRes: Artist = await res.json();
+  const serverRes: Artist[] = await res.json();
+  var updatedRes: Artist[] = [];
+  serverRes.forEach((item) => {
+    if (item.name !== "NULL") {
+      updatedRes.push(item);
+    }
+  });
   return {
     props: {
-      serverRes,
+      updatedRes,
     },
     revalidate: 3600,
   };
