@@ -44,13 +44,18 @@ const Artists: NextPage<any> = ({ updatedRes }) => {
     const res = await fetch(
       `/api/fetchTopics?table=${tableName}&offset=${offset}`
     );
-    var newData = await res.json();
-    setData((prevData) => [...prevData, ...newData]);
+    var newServerData = await res.json();
+
+    newServerData.forEach((item: any) => {
+      if (item.name !== null) {
+        setData((prevData) => [...prevData, item]);
+      }
+    });
     setOffset((prevOffset) => prevOffset + 5);
 
     setFetching(false);
 
-    if (newData.length == 0) {
+    if (newServerData.length == 0) {
       setEnd(true);
     }
   }
