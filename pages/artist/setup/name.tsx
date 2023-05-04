@@ -45,7 +45,7 @@ function Page() {
       <div className="md:w-[50%] w-full h-full absolute md:relative">
         <div className="block md:hidden absolute z-20 bg-[#1A2020] opacity-80 h-full w-full"></div>
         <Image
-          src="/setup.jpg"
+          src="/Setup.jpg"
           alt="Setup"
           fill
           className="object-cover object-top z-10"
