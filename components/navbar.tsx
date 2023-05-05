@@ -117,7 +117,7 @@ function Navbar() {
       <PcNavBar scroll={scroll} navBarProps={navBarProps}></PcNavBar>
       <MobileNavBar scroll={scroll} setNav={setNav}></MobileNavBar>
       {nav ? (
-        <div className="bg-black z-[1000] w-full h-[100svh] fixed top-0 overflow-y-scroll transition-all ease-in-out duration-700 flex flex-col items-center justify-start">
+        <div className="bg-black z-[1000] w-full h-[100vh] fixed top-0 overflow-y-scroll transition-all ease-in-out duration-700 flex flex-col items-center justify-start">
           <div className="flex flex-row-reverse w-full justify-between items-center mt-10">
             <div>
               <FontAwesomeIcon
@@ -130,19 +130,34 @@ function Navbar() {
             </div>
           </div>
           <div className="flex flex-col items-center justify-center h-[60%] gap-y-10 text-white font-righteous text-3xl">
-            <Link href={navBarProps[0].link}>
+            <Link
+              href={navBarProps[0].link}
+              onClick={() => {
+                setNav(false);
+              }}
+            >
               <div className="w-fit flex flex-col items-center justify-center group hover:cursor-pointer">
                 {navBarProps[0].name}
                 <div className="w-full h-[4px] bg-transparent group-hover:bg-white group-hover:scale-x-100 scale-x-0 transition-all ease-in-out duration-500 origin-left"></div>
               </div>
             </Link>
-            <Link href={navBarProps[1].link}>
+            <Link
+              href={navBarProps[1].link}
+              onClick={() => {
+                setNav(false);
+              }}
+            >
               <div className="w-fit flex flex-col items-center justify-center group hover:cursor-pointer">
                 {navBarProps[1].name}
                 <div className="w-full h-[4px] bg-transparent group-hover:bg-white group-hover:scale-x-100 scale-x-0 transition-all ease-in-out duration-500 origin-left"></div>
               </div>
             </Link>
-            <Link href={navBarProps[2].link}>
+            <Link
+              href={navBarProps[2].link}
+              onClick={() => {
+                setNav(false);
+              }}
+            >
               <div className="w-fit flex flex-col items-center justify-center group hover:cursor-pointer">
                 {navBarProps[2].name}
                 <div className="w-full h-[4px] bg-transparent group-hover:bg-white group-hover:scale-x-100 scale-x-0 transition-all ease-in-out duration-500 origin-left"></div>
@@ -150,7 +165,13 @@ function Navbar() {
             </Link>
           </div>
           <div className="flex flex-col items-center justify-center h-[30%] ">
-            <Link href={"login"} className="w-fit h-fit group">
+            <Link
+              href={"/login"}
+              className="w-fit h-fit group"
+              onClick={() => {
+                setNav(false);
+              }}
+            >
               <div className="group-hover:bg-white bg-[#1A2020] flex flex-col items-center justify-center transition-all ease-in-out duration-300">
                 <p className="font-righteous text-white group-hover:text-[#1A2020] text-3xl p-5 pl-7 pr-7 transition-all ease-in-out duration-300">
                   Login

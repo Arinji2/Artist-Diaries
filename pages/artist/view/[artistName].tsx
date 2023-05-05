@@ -192,7 +192,7 @@ const View: NextPage<Props> = ({ data }) => {
               : "h-0 hidden"
           } bg-[#1A2020] w-full mt-10 flex flex-col items-center justify-center gap-10 pb-10`}
         >
-          <h1 className="text-white font-dongle font-normal mt-10 text-[30px] md:text-[60px]">
+          <h1 className="text-white font-dongle font-normal  text-[30px] md:text-[60px]">
             Search Result
           </h1>
           {loading ? (
