@@ -12,7 +12,7 @@ import {
 
 const Page: NextPage<any> = ({ serverRes }) => {
   const [data, setData] = useState<Image[]>([...serverRes]);
-  const [offset, setOffset] = useState<number>(5);
+  const [offset, setOffset] = useState<number>(3);
   const [end, setEnd] = useState<boolean>(false);
 
   const [fetching, setFetching] = useState<boolean>(false);
