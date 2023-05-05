@@ -21,6 +21,28 @@ export const fetchPaginatedData = async (table: string, offset: string) => {
   }
 };
 
+export const fetchStaticPaginatedData = async (
+  table: string,
+  offset: string
+) => {
+  const offsetNumber = parseInt(offset);
+
+  if (isNaN(offsetNumber)) {
+    return "Invalid offset parameter";
+  }
+
+  const { data, error } = await supabase
+    .from(table)
+    .select("*")
+    .range(offsetNumber, offsetNumber + 2);
+
+  if (error) {
+    console.error(error);
+  } else {
+    return data;
+  }
+};
+
 export const fetchImageData = async (table: string, id: string) => {
   const { data, error } = await supabase
     .from(table)

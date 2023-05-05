@@ -4,7 +4,10 @@ import { useIntersection } from "react-use";
 import type { NextPage } from "next";
 import { Card } from "@/components/topics/Card";
 import type { Image } from "@/utils/types";
-import { fetchPaginatedData } from "@/utils/fetchFunc";
+import {
+  fetchPaginatedData,
+  fetchStaticPaginatedData,
+} from "@/utils/fetchFunc";
 
 const Page: NextPage<any> = ({ serverRes }) => {
   const [data, setData] = useState<Image[]>([...serverRes]);
@@ -61,12 +64,11 @@ const Page: NextPage<any> = ({ serverRes }) => {
 };
 
 export async function getStaticProps() {
-  const serverRes = await fetchPaginatedData("nature", "0");
+  const serverRes = await fetchStaticPaginatedData("nature", "0");
   return {
     props: {
       serverRes,
     },
-    revalidate: 3600,
   };
 }
 
