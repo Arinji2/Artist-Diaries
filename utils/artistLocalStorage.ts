@@ -1,18 +1,14 @@
+import type { ArtistImage } from "./types";
+
 export interface Artist {
   id: Number;
   user_id: String;
   name: String;
   email: String;
-  images: Image[];
-  favorites: Image[];
+  images: ArtistImage[];
+  favorites: ArtistImage[];
   about: String;
   profile_image: String;
-}
-
-export interface Image {
-  location: String;
-  table: String;
-  uid: Number;
 }
 
 export const parseLocalStorageData = () => {

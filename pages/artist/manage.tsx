@@ -3,6 +3,7 @@ import {
   parseLocalStorageData,
   verifyArtist,
 } from "@/utils/artistLocalStorage";
+import type { Image as Item } from "@/utils/types";
 import { faEdit, faCheck } from "@fortawesome/fontawesome-free-solid";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,15 +15,6 @@ import { useEffect, useState } from "react";
 
 interface ChildProps {
   artist: Artist | null;
-}
-
-interface Item {
-  uid: number;
-  name: string;
-  location: string;
-  artist: number;
-  likes: number;
-  description: string;
 }
 
 export const reFetchArtistData = async (id: any) => {
@@ -196,7 +188,7 @@ const Images: React.FC<ChildProps> = ({ artist }) => {
       return;
     }
 
-    artist.images.forEach((image) => {
+    artist.images.forEach(async (image) => {
       const data = getImageData(image.table, image.uid);
 
       data.then((data) => {

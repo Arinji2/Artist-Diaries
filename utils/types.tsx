@@ -12,3 +12,9 @@ export interface Image {
 export interface Error {
   message: string;
 }
+
+export interface ArtistImage {
+  uid: number;
+  table: string;
+  link: string;
+}

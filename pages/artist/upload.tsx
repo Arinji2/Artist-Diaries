@@ -5,12 +5,11 @@ import Success from "../../components/Upload/success";
 import Error from "../../components/Upload/error";
 import Image from "next/image";
 import { useUser } from "@supabase/auth-helpers-react";
-import {
-  Artist,
-  Image as ImageProps,
-  parseLocalStorageData,
-} from "@/utils/artistLocalStorage";
+import { Artist, parseLocalStorageData } from "@/utils/artistLocalStorage";
+
+import type { ArtistImage } from "@/utils/types";
 import { reFetchArtistData } from "./manage";
+import { postArtistImages } from "@/utils/postFunc";
 interface Props {
   name: string;
   image: string;
@@ -34,7 +33,7 @@ function Upload() {
     error: false,
     message: "",
   });
-  const [images, setImages] = useState([] as ImageProps[]);
+  const [images, setImages] = useState([] as ArtistImage[]);
   useEffect(() => {
     const getImages = async () => {
       const data = parseLocalStorageData();
@@ -78,13 +77,12 @@ function Upload() {
         uid: id,
       };
 
-      const upload = JSON.stringify([...images, value]);
+      const upload = [...images, value];
 
       await fetch(
         `/api/uploadImage?name=${name}&description=${description}&table=${topic}&userId=${user?.id}&id=${id}&width=${locWidth}&height=${locHeight}`
       );
-
-      await fetch(`/api/updateArtistImages?value=${upload}&id=${user?.id}`);
+      if (user?.id !== undefined) await postArtistImages(user?.id, upload);
       await reFetchArtistData(user?.id);
       setLoading(false);
       setSuccess(true);

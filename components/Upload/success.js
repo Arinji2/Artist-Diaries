@@ -15,7 +15,7 @@ function Success() {
   useEffect(() => {
     if (animation.current) {
       animation.current.addEventListener("complete", () => {
-        outer.push("/artist/dashboard");
+        router.push("/artist/dashboard");
       });
     }
   }, []);

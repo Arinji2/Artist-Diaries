@@ -1,8 +1,6 @@
-import {
-  parseLocalStorageData,
-  Artist,
-  Image as ImageInterface,
-} from "@/utils/artistLocalStorage";
+import { parseLocalStorageData, Artist } from "@/utils/artistLocalStorage";
+
+import type { ArtistImage as ImageInterface } from "@/utils/types";
 import { faCheck, faEdit, faTimes } from "@fortawesome/fontawesome-free-solid";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,6 +12,7 @@ import { useUser } from "@supabase/auth-helpers-react";
 import DeleteVerComp from "@/components/manage/favorites";
 import React from "react";
 import type { Image as ImageDataInterface } from "@/utils/types";
+import { postArtistFavorites, postArtistImages } from "@/utils/postFunc";
 
 interface CompProps {
   oldValue: string;
@@ -59,7 +58,7 @@ function ImageComp() {
   const [favoritesObj, setFavoritesObj] = useState<ImageInterface>({
     uid: 0,
     table: "",
-    location: "",
+    link: "",
   });
   const [id, setId] = useState<number>(0);
   const { tableName, imageId } = router.query;
@@ -96,7 +95,7 @@ function ImageComp() {
         setFavoritesObj({
           uid: parseInt(jsonData[0].uid),
           table: tableName?.toLowerCase() as string,
-          location: jsonData[0].location,
+          link: jsonData[0].location,
         });
       }
     };
@@ -355,12 +354,12 @@ const FavoritesComp: React.FC<FavoriteProps> = ({
   };
 
   useEffect(() => {
+    const updateFavorites = async () => {
+      if (user?.id !== undefined) await postArtistFavorites(user?.id, value);
+      await reFetchArtistData(user?.id);
+    };
     if (id !== 0) {
-      fetch(
-        `/api/updateArtistFavorites?id=${id}&value=${JSON.stringify(value)}`
-      ).then(() => {
-        reFetchArtistData(user?.id);
-      });
+      updateFavorites();
     }
   }, [value, id]);
 
@@ -422,6 +421,7 @@ const DeleteComp: React.FC<DeleteProps> = ({
       (e) => {
         e.json().then((e) => {
           setUpdated(true);
+
           if (e.message == "success") {
             valueUpdater(
               value.filter(
@@ -438,9 +438,7 @@ const DeleteComp: React.FC<DeleteProps> = ({
 
   useEffect(() => {
     const deleteFiles = async () => {
-      await fetch(
-        `/api/updateArtistImages?id=${id}&value=${JSON.stringify(value)}`
-      );
+      if (user?.id !== undefined) await postArtistImages(user?.id, value);
       await fetch(`/api/imageKit/deleteFile?fileName=${name}`);
       await reFetchArtistData(user?.id);
       router.push("/artist/manage");
