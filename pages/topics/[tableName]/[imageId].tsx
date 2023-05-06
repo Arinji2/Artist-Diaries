@@ -11,6 +11,7 @@ import { Oval } from "react-loader-spinner";
 import debounce from "lodash/debounce";
 import type { Image as ImageDataType } from "@/utils/types";
 import { fetchArtistData, fetchImageData } from "@/utils/fetchFunc";
+import { likeImage } from "@/utils/postFunc";
 
 const ImagePage: React.FC = () => {
   const user = useUser();
@@ -73,29 +74,36 @@ const ImagePage: React.FC = () => {
       return;
     }
   };
-  const handleUnlike = debounce(() => {
+  const handleUnlike = debounce(async () => {
     const value = imageData.likes.filter((like) => like !== user?.id);
-    fetch(
-      `/api/updateLikes?uid=${imageId}&table=${tableName}&value=${value}`
-    ).then((res) => {
-      if (res.status == 200) {
-        setLikes((prevLikes) => prevLikes - 1);
-        setLike((prevLike) => !prevLike);
-      }
-    });
+
+    const { imageId, tableName } = router.query;
+    if (
+      imageId !== undefined &&
+      !Array.isArray(imageId) &&
+      tableName !== undefined &&
+      !Array.isArray(tableName) &&
+      value !== undefined
+    )
+      await likeImage(imageId, tableName, value);
+    setLike((prev) => !prev);
+    setLikes((prev) => prev - 1);
   }, 500);
 
-  const handleLike = debounce(() => {
-    const value = [...imageData.likes, user?.id];
+  const handleLike = debounce(async () => {
+    var value;
+    if (user?.id !== undefined) value = [...imageData.likes, user?.id];
     const { imageId, tableName } = router.query;
-    fetch(
-      `/api/updateLikes?uid=${imageId}&table=${tableName}&value=${value}`
-    ).then((res) => {
-      if (res.status == 200) {
-        setLikes((prevLikes) => prevLikes + 1);
-        setLike((prevLike) => !prevLike);
-      }
-    });
+    if (
+      imageId !== undefined &&
+      !Array.isArray(imageId) &&
+      tableName !== undefined &&
+      !Array.isArray(tableName) &&
+      value !== undefined
+    )
+      await likeImage(imageId, tableName, value);
+    setLike((prev) => !prev);
+    setLikes((prev) => prev + 1);
   }, 500);
 
   useEffect(() => {

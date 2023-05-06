@@ -1,28 +1,15 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from "react";
 import { useIntersection } from "react-use";
 import type { NextPage } from "next";
 import Card from "@/components/People/Card";
 import Link from "next/link";
+import type { Artist } from "@/utils/types";
+import {
+  fetchPaginatedData,
+  fetchStaticPaginatedData,
+} from "@/utils/fetchFunc";
 
-export interface Artist {
-  id: number;
-  user_id: string;
-  name: string;
-  email: string;
-  images: Image[];
-  favorites: Image[];
-  about: string;
-  profile_image: string;
-}
-
-interface Image {
-  uid: number;
-  name: string;
-  location: string;
-  artist: number;
-  likes: number;
-  description: string;
-}
 const Staff: NextPage<any> = ({ serverRes }) => {
   useEffect(() => {}, []);
   const [data, setData] = useState<Artist[]>([...serverRes]);
@@ -39,16 +26,18 @@ const Staff: NextPage<any> = ({ serverRes }) => {
   const tableName = "staff";
   async function fetchData() {
     setFetching(true);
-    const res = await fetch(
-      `/api/fetchTopics?table=${tableName}&offset=${offset}`
-    );
-    var newData = await res.json();
-    setData((prevData) => [...prevData, ...newData]);
+    const res = await fetchPaginatedData(tableName, offset);
+
+    res.forEach((item: any) => {
+      if (item.name !== null) {
+        setData((prevData) => [...prevData, item]);
+      }
+    });
     setOffset((prevOffset) => prevOffset + 5);
 
     setFetching(false);
 
-    if (newData.length == 0) {
+    if (res.length == 0) {
       setEnd(true);
     }
   }
@@ -90,15 +79,13 @@ const Staff: NextPage<any> = ({ serverRes }) => {
 };
 
 export async function getStaticProps() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/fetchTopics?table=staff&offset=0`
-  );
-  const serverRes: Artist = await res.json();
+  const res = await fetchStaticPaginatedData("staff", 0);
+
   return {
     props: {
-      serverRes,
+      res,
     },
-    revalidate: 3600,
+    revalidate: 1000,
   };
 }
 

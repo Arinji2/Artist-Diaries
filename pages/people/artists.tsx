@@ -1,32 +1,19 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from "react";
 import { useIntersection } from "react-use";
 import type { NextPage } from "next";
 import Card from "@/components/People/Card";
 import Link from "next/link";
+import type { Artist } from "@/utils/types";
+import {
+  fetchPaginatedData,
+  fetchStaticPaginatedData,
+} from "@/utils/fetchFunc";
 
-export interface Artist {
-  id: number;
-  user_id: string;
-  name: string;
-  email: string;
-  images: Image[];
-  favorites: Image[];
-  about: string;
-  profile_image: string;
-}
-
-interface Image {
-  uid: number;
-  name: string;
-  location: string;
-  artist: number;
-  likes: number;
-  description: string;
-}
 const Artists: NextPage<any> = ({ updatedRes }) => {
   useEffect(() => {}, []);
   const [data, setData] = useState<Artist[]>([...updatedRes]);
-  const [offset, setOffset] = useState<number>(5);
+  const [offset, setOffset] = useState<number>(3);
   const [end, setEnd] = useState<boolean>(false);
 
   const [fetching, setFetching] = useState<boolean>(false);
@@ -39,12 +26,9 @@ const Artists: NextPage<any> = ({ updatedRes }) => {
   const tableName = "artists";
   async function fetchData() {
     setFetching(true);
-    const res = await fetch(
-      `/api/fetchTopics?table=${tableName}&offset=${offset}`
-    );
-    var newServerData = await res.json();
+    const res = await fetchPaginatedData(tableName, offset);
 
-    newServerData.forEach((item: any) => {
+    res.forEach((item: any) => {
       if (item.name !== null) {
         setData((prevData) => [...prevData, item]);
       }
@@ -53,7 +37,7 @@ const Artists: NextPage<any> = ({ updatedRes }) => {
 
     setFetching(false);
 
-    if (newServerData.length == 0) {
+    if (res.length == 0) {
       setEnd(true);
     }
   }
@@ -95,12 +79,10 @@ const Artists: NextPage<any> = ({ updatedRes }) => {
 };
 
 export async function getStaticProps() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/fetchTopics?table=artists&offset=0`
-  );
-  const serverRes: Artist[] = await res.json();
+  const res = await fetchStaticPaginatedData("artists", 0);
+
   var updatedRes: Artist[] = [];
-  serverRes.forEach((item) => {
+  res.forEach((item: Artist) => {
     if (item.name !== null) {
       updatedRes.push(item);
     }
@@ -109,7 +91,7 @@ export async function getStaticProps() {
     props: {
       updatedRes,
     },
-    revalidate: 3600,
+    revalidate: 1000,
   };
 }
 

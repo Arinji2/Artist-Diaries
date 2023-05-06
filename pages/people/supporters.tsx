@@ -3,26 +3,11 @@ import { useIntersection } from "react-use";
 import type { NextPage } from "next";
 import Card from "@/components/People/Card";
 import Link from "next/link";
-
-export interface Artist {
-  id: number;
-  user_id: string;
-  name: string;
-  email: string;
-  images: Image[];
-  favorites: Image[];
-  about: string;
-  profile_image: string;
-}
-
-interface Image {
-  uid: number;
-  name: string;
-  location: string;
-  artist: number;
-  likes: number;
-  description: string;
-}
+import type { Artist } from "@/utils/types";
+import {
+  fetchPaginatedData,
+  fetchStaticPaginatedData,
+} from "@/utils/fetchFunc";
 const Supporters: NextPage<any> = ({ serverRes }) => {
   useEffect(() => {}, []);
   const [data, setData] = useState<Artist[]>([...serverRes]);
@@ -39,16 +24,18 @@ const Supporters: NextPage<any> = ({ serverRes }) => {
   const tableName = "supporters";
   async function fetchData() {
     setFetching(true);
-    const res = await fetch(
-      `/api/fetchTopics?table=${tableName}&offset=${offset}`
-    );
-    var newData = await res.json();
-    setData((prevData) => [...prevData, ...newData]);
+    const res = await fetchPaginatedData(tableName, offset);
+
+    res.forEach((item: any) => {
+      if (item.name !== null) {
+        setData((prevData) => [...prevData, item]);
+      }
+    });
     setOffset((prevOffset) => prevOffset + 5);
 
     setFetching(false);
 
-    if (newData.length == 0) {
+    if (res.length == 0) {
       setEnd(true);
     }
   }
@@ -90,15 +77,12 @@ const Supporters: NextPage<any> = ({ serverRes }) => {
 };
 
 export async function getStaticProps() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/fetchTopics?table=supporters&offset=0`
-  );
-  const serverRes: Artist = await res.json();
+  const res = await fetchStaticPaginatedData("supporters", 0);
   return {
     props: {
-      serverRes,
+      res,
     },
-    revalidate: 3600,
+    revalidate: 1000,
   };
 }
 

@@ -3,49 +3,17 @@ import * as React from "react";
 import { useState, useEffect, FC } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { supabase } from "@/utils/supabaseClient";
-interface monthlyData {
-  name: string;
-  description: string;
-  artist: string;
-  date: string;
-  location: string;
-  width: string;
-  height: string;
-}
+import { fetchArtistData, fetchMonthlyData } from "@/utils/fetchFunc";
+import type { MonthlyData } from "@/utils/types";
+
 interface PageProps {
-  monthlyData: monthlyData;
+  monthlyData: MonthlyData;
 }
 
 const Artist: FC<PageProps> = ({ monthlyData }) => {
   const [imageLoading, setImageLoading] = useState(false);
-  const [widthLoc, setWidthLoc] = useState(0);
-  const [heightLoc, setHeightLoc] = useState(0);
   const router = useRouter();
-  useEffect(() => {}, []);
 
-  useEffect(() => {
-    //check for mobile device
-
-    var widthVar = Number.parseInt(monthlyData.width);
-    var heightVar = Number.parseInt(monthlyData.height);
-
-    widthVar = Math.round(widthVar > 1000 ? widthVar * 0.3 : widthVar * 0.9);
-    heightVar = Math.round(
-      heightVar > 1000 ? heightVar * 0.3 : heightVar * 0.9
-    );
-
-    if (window.innerWidth < 768) {
-      widthVar = window.innerWidth - 50;
-      heightVar = Math.round(
-        heightVar > window.innerHeight
-          ? window.innerHeight - 100
-          : heightVar * 0.7
-      );
-    }
-    setWidthLoc(widthVar);
-    setHeightLoc(heightVar);
-  }, [monthlyData.width, monthlyData.height]);
   return (
     <div className="relative w-full min-h-[100vh] h-fit bg-[#1A2020] flex flex-col items-center justify-center">
       <div className=" mt-36"></div>
@@ -105,20 +73,15 @@ const Artist: FC<PageProps> = ({ monthlyData }) => {
 };
 
 export async function getStaticProps() {
-  const { data, error } = await supabase
-    .from("monthly")
-    .select("*")
-    .eq("mode", "artist");
-
+  const data = await fetchMonthlyData("artist");
   if (data === null) return;
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/fetchArtist?id=${data[0].data.id}`
-  );
-  const formatData = await res.json();
+
+  const artist = await fetchArtistData(data[0].data.id);
+  if (artist === undefined) return;
   const monthlyData = {
-    name: formatData[0].name,
-    description: formatData[0].about,
-    location: formatData[0].profile_image,
+    name: artist.name,
+    description: artist.about,
+    location: artist.profile_image,
     date: data[0].updatedAt,
   };
 

@@ -3,18 +3,15 @@ import * as React from "react";
 import { useState, useEffect, FC } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { supabase } from "@/utils/supabaseClient";
-interface monthlyData {
-  name: string;
-  description: string;
-  artist: string;
-  date: string;
-  location: string;
-  width: string;
-  height: string;
-}
+import type { MonthlyData } from "@/utils/types";
+import {
+  fetchArtistData,
+  fetchImageData,
+  fetchMonthlyData,
+} from "@/utils/fetchFunc";
+
 interface PageProps {
-  monthlyData: monthlyData;
+  monthlyData: MonthlyData;
 }
 
 const Art: FC<PageProps> = ({ monthlyData }) => {
@@ -25,8 +22,6 @@ const Art: FC<PageProps> = ({ monthlyData }) => {
   useEffect(() => {}, []);
 
   useEffect(() => {
-    //check for mobile device
-
     var widthVar = Number.parseInt(monthlyData.width);
     var heightVar = Number.parseInt(monthlyData.height);
 
@@ -111,33 +106,24 @@ const Art: FC<PageProps> = ({ monthlyData }) => {
 };
 
 export async function getStaticProps() {
-  const { data, error } = await supabase
-    .from("monthly")
-    .select("*")
-    .eq("mode", "art");
+  const data = await fetchMonthlyData("art");
 
   if (data === null) return;
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/fetchImage?uid=${data[0].data.id}&table=${data[0].data.table}`
-  );
-  const formatData = await res.json();
-  const artist = await fetch(
-    `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/fetchArtist?id=${formatData[0].artist}`
-  );
-  const formatArtist = await artist.json();
+  const image = await fetchImageData(data[0].data.table, data[0].data.id);
+
+  const artist = await fetchArtistData(image.artist);
+  if (artist === undefined) return;
 
   const monthlyData = {
-    name: formatData[0].name,
-    artist: formatArtist[0].name,
-    description: formatData[0].description,
+    name: image.name,
+    artist: artist.name,
+    description: image.description,
     date: data[0].updatedAt,
-    location: formatData[0].location,
-    width: formatData[0].width,
-    height: formatData[0].height,
+    location: image.location,
+    width: image.width,
+    height: image.height,
   };
-
-  //const artistData = fetch();
   return {
     props: {
       monthlyData,

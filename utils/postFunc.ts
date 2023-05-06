@@ -76,3 +76,15 @@ export const postArtistImages = async (id: string, value: ArtistImage[]) => {
 export const postArtistFavorites = async (id: string, value: ArtistImage[]) => {
   await supabase.from("artists").update({ favorites: value }).eq("user_id", id);
 };
+
+export const likeImage = async (id: string, table: string, value: string[]) => {
+  console.log(table, id, value);
+  const { data, error } = await supabase
+    .from(table)
+    .update({
+      likes: value,
+    })
+    .eq("uid", id);
+  if (error) console.log(error);
+  return data;
+};

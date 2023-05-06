@@ -24,16 +24,15 @@ const Page: NextPage<any> = ({ serverRes }) => {
   });
   async function fetchData() {
     setFetching(true);
-    const res = await fetch(
-      `/api/supabase/fetch/paginatedTableFetch?table=${"charcoal"}&offset=${offset}`
-    );
-    var newData = await res.json();
-    setData((prevData) => [...prevData, ...newData]);
+    var res = await fetchPaginatedData("charcoal", offset);
+    if (res === undefined) return;
+
+    setData((prevData) => [...prevData, ...res]);
     setOffset((prevOffset) => prevOffset + 5);
 
     setFetching(false);
 
-    if (newData.length == 0) {
+    if (res.length == 0) {
       setEnd(true);
     }
   }
@@ -65,7 +64,7 @@ const Page: NextPage<any> = ({ serverRes }) => {
 };
 
 export async function getStaticProps() {
-  const serverRes = await fetchStaticPaginatedData("charcoal", "0");
+  const serverRes = await fetchStaticPaginatedData("charcoal", 0);
   return {
     props: {
       serverRes,

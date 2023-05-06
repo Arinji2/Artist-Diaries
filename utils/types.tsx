@@ -30,3 +30,15 @@ export interface Artist {
   profile_image: string;
   image_id: string;
 }
+
+export interface MonthlyData {
+  uid: number;
+  name: string;
+  location: string;
+  artist: string;
+  likes: string[];
+  description: string;
+  width: string;
+  height: string;
+  date: string;
+}
