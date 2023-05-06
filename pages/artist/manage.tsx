@@ -72,7 +72,7 @@ const PersonalInfo: React.FC<ChildProps> = ({ artist }) => {
     <div className="w-full md:w-[70%] h-fit bg-[#440212] flex flex-col items-center md:items-start justify-center rounded-lg shadow-lg shadow-black relative">
       <FontAwesomeIcon
         icon={faEdit as IconProp}
-        className="w-[40px] h-[40px] text-white absolute right-10 top-5 md:top-10"
+        className="w-[40px] h-[40px] text-white absolute right-10 top-40 md:top-10"
         onClick={() => setEditName(true)}
       />
       <h2 className="font-righteous text-white text-[40px] md:mt-0 mt-20 md:ml-10 p-5">
@@ -91,7 +91,7 @@ const PersonalInfo: React.FC<ChildProps> = ({ artist }) => {
           />
           <FontAwesomeIcon
             icon={faCheck as IconProp}
-            className="w-[40px] h-[40px] text-green-400 absolute right-32 top-5 md:top-10 "
+            className="w-[40px] h-[40px] text-green-400 absolute right-32 top-40 md:top-10 "
             onClick={async () => {
               if (name === "") {
                 setEditName(false);
@@ -111,7 +111,7 @@ const PersonalInfo: React.FC<ChildProps> = ({ artist }) => {
       )}
       <FontAwesomeIcon
         icon={faEdit as IconProp}
-        className="w-[40px] h-[40px] text-white absolute right-10 top-10 md:top-44"
+        className="w-[40px] h-[40px] text-white absolute right-10 top-64 md:top-44"
         onClick={() => setEditAbout(true)}
       />
 
@@ -128,7 +128,7 @@ const PersonalInfo: React.FC<ChildProps> = ({ artist }) => {
           />
           <FontAwesomeIcon
             icon={faCheck as IconProp}
-            className="w-[40px] h-[40px] text-green-400 absolute right-32 top-5 md:top-44 "
+            className="w-[40px] h-[40px] text-green-400 absolute right-32 top-64 md:top-44 "
             onClick={async () => {
               if (about === "") {
                 setEditAbout(false);
@@ -142,7 +142,7 @@ const PersonalInfo: React.FC<ChildProps> = ({ artist }) => {
           />
         </div>
       ) : (
-        <h3 className="text-[30px] font-righteous text-white md:ml-32 p-5 text-left">
+        <h3 className="text-[30px] font-righteous text-white md:ml-32 p-5 text-center md:text-left">
           About:{" "}
           <span className="text-[#BD4C67] line-clamp-1">{artist?.about}</span>
         </h3>

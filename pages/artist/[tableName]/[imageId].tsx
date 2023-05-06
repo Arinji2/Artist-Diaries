@@ -1,6 +1,6 @@
-import { parseLocalStorageData, Artist } from "@/utils/artistLocalStorage";
+import { parseLocalStorageData } from "@/utils/artistLocalStorage";
 
-import type { ArtistImage as ImageInterface } from "@/utils/types";
+import type { ArtistImage as ImageInterface, Artist } from "@/utils/types";
 import { faCheck, faEdit, faTimes } from "@fortawesome/fontawesome-free-solid";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
