@@ -5,9 +5,9 @@ import Success from "../../components/Upload/success";
 import Error from "../../components/Upload/error";
 import Image from "next/image";
 import { useUser } from "@supabase/auth-helpers-react";
-import { Artist, parseLocalStorageData } from "@/utils/artistLocalStorage";
+import { parseLocalStorageData } from "@/utils/artistLocalStorage";
 
-import type { ArtistImage } from "@/utils/types";
+import type { ArtistImage, Artist } from "@/utils/types";
 import { reFetchArtistData } from "./manage";
 import { postArtistImages } from "@/utils/postFunc";
 interface Props {

@@ -1,5 +1,3 @@
-import { Artist } from "@/utils/artistLocalStorage";
-import { useUser } from "@supabase/auth-helpers-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";

@@ -2,13 +2,7 @@ import {
   parseLocalStorageData,
   verifyArtist,
 } from "@/utils/artistLocalStorage";
-import {
-  deleteArtistProfile,
-  postAbout,
-  postImage,
-  postImageID,
-  postName,
-} from "@/utils/postFunc";
+import { postAbout, postName } from "@/utils/postFunc";
 import type { Image as Item, Artist } from "@/utils/types";
 import { faEdit, faCheck } from "@fortawesome/fontawesome-free-solid";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
