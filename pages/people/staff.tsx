@@ -11,7 +11,9 @@ import {
 } from "@/utils/fetchFunc";
 
 const Staff: NextPage<any> = ({ serverRes }) => {
-  useEffect(() => {}, []);
+  useEffect(() => {
+    console.log(serverRes);
+  }, [serverRes]);
   const [data, setData] = useState<Artist[]>([...serverRes]);
   const [offset, setOffset] = useState<number>(3);
   const [end, setEnd] = useState<boolean>(false);
@@ -79,11 +81,11 @@ const Staff: NextPage<any> = ({ serverRes }) => {
 };
 
 export async function getStaticProps() {
-  const res = await fetchStaticPaginatedData("staff", 0);
+  const serverRes = await fetchStaticPaginatedData("staff", 0);
 
   return {
     props: {
-      res,
+      serverRes,
     },
     revalidate: 1000,
   };

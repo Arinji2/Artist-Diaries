@@ -77,10 +77,10 @@ const Supporters: NextPage<any> = ({ serverRes }) => {
 };
 
 export async function getStaticProps() {
-  const res = await fetchStaticPaginatedData("supporters", 0);
+  const serverRes = await fetchStaticPaginatedData("supporters", 0);
   return {
     props: {
-      res,
+      serverRes,
     },
     revalidate: 1000,
   };
