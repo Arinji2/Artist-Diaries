@@ -1,17 +1,24 @@
 import {
-  Artist,
   parseLocalStorageData,
   verifyArtist,
 } from "@/utils/artistLocalStorage";
-import type { Image as Item } from "@/utils/types";
+import {
+  deleteArtistProfile,
+  postAbout,
+  postImage,
+  postImageID,
+  postName,
+} from "@/utils/postFunc";
+import type { Image as Item, Artist } from "@/utils/types";
 import { faEdit, faCheck } from "@fortawesome/fontawesome-free-solid";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useUser } from "@supabase/auth-helpers-react";
+import { IKContext, IKUpload } from "imagekitio-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface ChildProps {
   artist: Artist | null;
@@ -55,20 +62,23 @@ function Manage() {
 const PersonalInfo: React.FC<ChildProps> = ({ artist }) => {
   const router = useRouter();
   const user = useUser();
-  const [edit, setEdit] = useState(false);
+  const [editName, setEditName] = useState(false);
   const [name, setName] = useState<string>("");
+  const [editAbout, setEditAbout] = useState(false);
+  const [about, setAbout] = useState<string>("");
+  const buttonRef = useRef(null);
 
   return (
     <div className="w-full md:w-[70%] h-fit bg-[#440212] flex flex-col items-center md:items-start justify-center rounded-lg shadow-lg shadow-black relative">
       <FontAwesomeIcon
         icon={faEdit as IconProp}
         className="w-[40px] h-[40px] text-white absolute right-10 top-5 md:top-10"
-        onClick={() => setEdit(true)}
+        onClick={() => setEditName(true)}
       />
       <h2 className="font-righteous text-white text-[40px] md:mt-0 mt-20 md:ml-10 p-5">
         Personal Info:{" "}
       </h2>
-      {edit ? (
+      {editName ? (
         <div className="flex flex-row items-center justify-center md:justify-start w-full ">
           <h3 className="text-[30px] font-righteous text-white md:ml-32 p-5">
             Name:
@@ -82,26 +92,59 @@ const PersonalInfo: React.FC<ChildProps> = ({ artist }) => {
           <FontAwesomeIcon
             icon={faCheck as IconProp}
             className="w-[40px] h-[40px] text-green-400 absolute right-32 top-5 md:top-10 "
-            onClick={() => {
+            onClick={async () => {
               if (name === "") {
-                setEdit(false);
+                setEditName(false);
                 return;
               }
-              const id = artist?.id?.toString();
-              fetch(`/api/updateName?name=${name}&id=${id}`).then(() => {
-                fetch(`/api/fetchArtist?id=${user?.id}`)
-                  .then((res) => res.json())
-                  .then((data) => {
-                    localStorage.setItem("artist", JSON.stringify(data[0]));
-                    router.reload();
-                  });
-              });
+              const id = user?.id;
+              await postName(name, id);
+              await reFetchArtistData(id);
+              router.reload();
             }}
           />
         </div>
       ) : (
         <h3 className="text-[30px] font-righteous text-white md:ml-32 p-5">
           Name: <span className="text-[#BD4C67]">{artist?.name}</span>
+        </h3>
+      )}
+      <FontAwesomeIcon
+        icon={faEdit as IconProp}
+        className="w-[40px] h-[40px] text-white absolute right-10 top-10 md:top-44"
+        onClick={() => setEditAbout(true)}
+      />
+
+      {editAbout ? (
+        <div className="flex flex-row items-center justify-center md:justify-start w-full ">
+          <h3 className="text-[30px] font-righteous text-white md:ml-32 p-5">
+            About:
+          </h3>
+          <input
+            type="text"
+            className="w-[40%] h-[40px] ml-5 outline-none rounded-lg text-black p-4 font-righteous text-[20px]"
+            placeholder="New Name.."
+            onChange={(e) => setAbout(e.target.value)}
+          />
+          <FontAwesomeIcon
+            icon={faCheck as IconProp}
+            className="w-[40px] h-[40px] text-green-400 absolute right-32 top-5 md:top-44 "
+            onClick={async () => {
+              if (about === "") {
+                setEditAbout(false);
+                return;
+              }
+              const id = user?.id;
+              await postAbout(about, id);
+              await reFetchArtistData(id);
+              router.reload();
+            }}
+          />
+        </div>
+      ) : (
+        <h3 className="text-[30px] font-righteous text-white md:ml-32 p-5 text-left">
+          About:{" "}
+          <span className="text-[#BD4C67] line-clamp-1">{artist?.about}</span>
         </h3>
       )}
     </div>

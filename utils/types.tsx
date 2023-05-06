@@ -18,3 +18,15 @@ export interface ArtistImage {
   table: string;
   link: string;
 }
+
+export interface Artist {
+  id: number;
+  user_id: string;
+  name: string;
+  email: string;
+  images: ArtistImage[];
+  favorites: ArtistImage[];
+  about: string;
+  profile_image: string;
+  image_id: string;
+}

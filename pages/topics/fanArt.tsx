@@ -51,7 +51,7 @@ const Page: NextPage<any> = ({ serverRes }) => {
 
       <div className="w-full h-full flex flex-row flex-wrap items-center justify-center gap-2 ">
         {data.map((item) => (
-          <Card key={item.uid} item={item} tableName={"fanArt"} />
+          <Card key={item.uid} item={item} tableName={"fanart"} />
         ))}
       </div>
       <div ref={endOfPageRef}>

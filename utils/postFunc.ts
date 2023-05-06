@@ -1,3 +1,4 @@
+import { imageKit } from "./imagekitClientInit";
 import { supabase } from "./supabaseClient";
 import { ArtistImage } from "./types";
 
@@ -47,6 +48,17 @@ export const postImageID = async (id: string, user_id: any) => {
 
   if (error) {
   }
+};
+
+export const deleteArtistProfile = async (fileId: string, user_id: any) => {
+  await imageKit.deleteFile(fileId);
+  await supabase
+    .from("artists")
+    .update({
+      image_id: "",
+      profile_image: "",
+    })
+    .eq("user_id", user_id);
 };
 
 export const postEmail = async (email: string, user_id: any) => {

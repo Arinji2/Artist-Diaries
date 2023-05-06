@@ -1,15 +1,4 @@
-import type { ArtistImage } from "./types";
-
-export interface Artist {
-  id: Number;
-  user_id: String;
-  name: String;
-  email: String;
-  images: ArtistImage[];
-  favorites: ArtistImage[];
-  about: String;
-  profile_image: String;
-}
+import type { Artist } from "./types";
 
 export const parseLocalStorageData = () => {
   const rawData = localStorage.getItem("artist");
@@ -24,6 +13,7 @@ export const parseLocalStorageData = () => {
       favorites: [],
       about: "",
       profile_image: "",
+      image_id: "",
     };
 
   const jsonData: Artist = JSON.parse(rawData);
