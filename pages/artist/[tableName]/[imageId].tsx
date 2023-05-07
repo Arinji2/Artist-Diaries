@@ -1,18 +1,26 @@
-import { parseLocalStorageData } from "@/utils/artistLocalStorage";
+/* eslint-disable react-hooks/exhaustive-deps */
+import {
+  parseLocalStorageData,
+  reFetchArtistData,
+} from "@/utils/artistLocalStorage";
 
 import type { ArtistImage as ImageInterface, Artist } from "@/utils/types";
 import { faCheck, faEdit, faTimes } from "@fortawesome/fontawesome-free-solid";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import { Router, useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { reFetchArtistData } from "../manage";
 import { useUser } from "@supabase/auth-helpers-react";
 import DeleteVerComp from "@/components/manage/favorites";
 import React from "react";
 import type { Image as ImageDataInterface } from "@/utils/types";
-import { postArtistFavorites, postArtistImages } from "@/utils/postFunc";
+import {
+  postArtistFavorites,
+  postArtistImages,
+  updateImageName,
+} from "@/utils/postFunc";
+import { fetchImageData } from "@/utils/fetchFunc";
 
 interface CompProps {
   oldValue: string;
@@ -85,17 +93,21 @@ function ImageComp() {
 
     const fetchData = async () => {
       setId(parseLocalStorageData()?.id as number);
-      if (Array.isArray(tableName) || Array.isArray(imageId)) return;
-      const rawData = await fetch(
-        `/api/fetchImage?table=${tableName?.toLowerCase()}&uid=${imageId}}`
-      );
-      const jsonData = await rawData.json();
+      if (
+        Array.isArray(tableName) ||
+        Array.isArray(imageId) ||
+        tableName === undefined ||
+        imageId === undefined
+      )
+        return;
+      const data = await fetchImageData(tableName.toLowerCase(), imageId);
+
       {
-        setImageData(jsonData[0]);
+        setImageData(data);
         setFavoritesObj({
-          uid: parseInt(jsonData[0].uid),
+          uid: data?.uid,
           table: tableName?.toLowerCase() as string,
-          link: jsonData[0].location,
+          link: data?.location,
         });
       }
     };
@@ -155,7 +167,7 @@ function ImageComp() {
         <div className="mt-8  p-3 flex flex-col items-center justify-center gap-4 ">
           <h1 className="text-5xl font-righteous text-white">
             Likes:{" "}
-            <span className="text-[#BD4C67]">{imageData.likes.length}</span>
+            <span className="text-[#BD4C67]">{imageData?.likes.length}</span>
           </h1>
         </div>
         <FavoritesComp
@@ -164,7 +176,7 @@ function ImageComp() {
           flag={favoritesFlag}
           flagUpdater={setFavoritesFlag}
           id={id}
-          imageId={imageData.uid}
+          imageId={imageData?.uid}
           imageObj={favoritesObj}
         />
         <DeleteComp
@@ -179,7 +191,7 @@ function ImageComp() {
           valueUpdater={setImages}
           value={images}
           id={id}
-          name={imageData.name}
+          name={imageData?.name}
         />
       </div>
     </React.Fragment>
@@ -225,9 +237,7 @@ const NameComp: React.FC<CompProps> = ({
               icon={faCheck as IconProp}
               className="w-[40px] h-[40px] text-green-400"
               onClick={() => {
-                fetch(
-                  `/api/updateImageName?id=${id}&table=${table}&name=${newValue}`
-                )
+                updateImageName(id, newValue, table)
                   .then(() => {
                     setPrevValue(newValue);
                     setEdit(false);
@@ -355,8 +365,11 @@ const FavoritesComp: React.FC<FavoriteProps> = ({
 
   useEffect(() => {
     const updateFavorites = async () => {
-      if (user?.id !== undefined) await postArtistFavorites(user?.id, value);
-      await reFetchArtistData(user?.id);
+      if (user?.id !== undefined) {
+        await postArtistFavorites(user?.id, value);
+        console.log("2", user?.id);
+        await reFetchArtistData(user?.id);
+      }
     };
     if (id !== 0) {
       updateFavorites();
@@ -438,10 +451,13 @@ const DeleteComp: React.FC<DeleteProps> = ({
 
   useEffect(() => {
     const deleteFiles = async () => {
-      if (user?.id !== undefined) await postArtistImages(user?.id, value);
-      await fetch(`/api/imageKit/deleteFile?fileName=${name}`);
-      await reFetchArtistData(user?.id);
-      router.push("/artist/manage");
+      if (user?.id !== undefined) {
+        await postArtistImages(user?.id, value);
+        await fetch(`/api/imageKit/deleteFile?fileName=${name}`);
+        console.log(3, user?.id);
+        await reFetchArtistData(user?.id);
+        router.push("/artist/manage");
+      }
     };
 
     if (updated) {

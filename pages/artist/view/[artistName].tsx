@@ -2,41 +2,17 @@ import { faHeart } from "@fortawesome/fontawesome-free-solid";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NextPage } from "next";
-import Head from "next/head";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { FC, useEffect, useState } from "react";
 import { Oval } from "react-loader-spinner";
+import type { Artist, Image as ImageProps } from "@/utils/types";
+import { fetchImageData } from "@/utils/fetchFunc";
 
 interface Props {
   data: any;
 }
 
-interface Artist {
-  name: string;
-  about: string;
-  profile_image: string;
-  id: string;
-  likes: number;
-  images: ArtistImageProps[];
-  favorites: ArtistImageProps[];
-}
-
-interface ArtistImageProps {
-  location: string;
-  table: string;
-  uid: number;
-}
-
-interface ImageProps {
-  location: string;
-  name: string;
-  description: string;
-  likes: string[];
-  width: string;
-  height: string;
-}
 interface CardProps {
   image: string;
   title: string;
@@ -66,8 +42,10 @@ const View: NextPage<Props> = ({ data }) => {
     name: "",
     about: "",
     profile_image: "",
-    id: "",
-    likes: 0,
+    id: 0,
+    email: "",
+    image_id: "",
+    user_id: "",
     images: [],
     favorites: [],
   });
@@ -80,7 +58,7 @@ const View: NextPage<Props> = ({ data }) => {
   useEffect(() => {
     if (data.name !== "null") setServerData(data);
     else setError(true);
-  }, []);
+  }, [data]);
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -88,15 +66,9 @@ const View: NextPage<Props> = ({ data }) => {
         setError(true);
         return;
       }
-      serverData.images.map((image) => {
-        fetch(
-          `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/fetchImage?table=${image.table}&uid=${image.uid}`
-        )
-          .then((res) => res.json())
-
-          .then((res) => {
-            if (res[0] !== undefined) setImages((prev) => [...prev, res[0]]);
-          });
+      serverData.images.map(async (image) => {
+        const res = await fetchImageData(image.table, image.uid.toString());
+        if (res !== undefined) setImages((prev) => [...prev, res]);
       });
     };
     const fetchFavorites = async () => {
@@ -104,15 +76,9 @@ const View: NextPage<Props> = ({ data }) => {
         setError(true);
         return;
       }
-      serverData.favorites.map((image) => {
-        fetch(
-          `${process.env.NEXT_PUBLIC_API_DOMAIN}/api/fetchImage?table=${image.table}&uid=${image.uid}`
-        )
-          .then((res) => res.json())
-
-          .then((res) => {
-            if (res[0] !== undefined) setFavorites((prev) => [...prev, res[0]]);
-          });
+      serverData.favorites.map(async (image) => {
+        const res = await fetchImageData(image.table, image.uid.toString());
+        if (res !== undefined) setFavorites((prev) => [...prev, res]);
       });
     };
 
@@ -133,7 +99,7 @@ const View: NextPage<Props> = ({ data }) => {
       });
       setLoading(false);
     }
-  }, [search, searchRepeat]);
+  }, [search, searchRepeat, inputText, images]);
 
   const router = useRouter();
   return (
@@ -154,7 +120,7 @@ const View: NextPage<Props> = ({ data }) => {
         </div>
       ) : null}
       <div className="w-full h-fit bg-[#FFFFFF]">
-        <div className="mt-36 md:mt-36 h-[100svh]">
+        <div className="mt-36 md:mt-36 h-[100svh] w-full">
           <ImageComp
             image={data.profile_image}
             title={data.name}

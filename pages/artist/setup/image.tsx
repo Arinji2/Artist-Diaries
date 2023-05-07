@@ -5,7 +5,8 @@ import { useUser } from "@supabase/auth-helpers-react";
 import { postEmail, postImage, postImageID, postName } from "@/utils/postFunc";
 import { useRouter } from "next/router";
 import { IKContext, IKUpload } from "imagekitio-react";
-import { reFetchArtistData } from "../manage";
+import { reFetchArtistData } from "@/utils/artistLocalStorage";
+
 function Page() {
   const [name, setName] = useState("");
   const user = useUser();

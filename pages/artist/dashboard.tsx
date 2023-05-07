@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -11,6 +13,8 @@ interface CardProps {
 function Dashboard() {
   const [name, setName] = useState("");
   const router = useRouter();
+  const user = useUser();
+  const supabase = useSupabaseClient();
   useEffect(() => {
     const data = localStorage.getItem("artist");
     var parsedData;
@@ -18,7 +22,7 @@ function Dashboard() {
 
     if (parsedData.name == null) router.push("/artist/setup/name");
     setName(parsedData?.name);
-  });
+  }, []);
   return (
     <div className="w-full min-h-[100svh] h-fit ">
       <div className="mt-36"></div>
@@ -41,6 +45,20 @@ function Dashboard() {
           image="/Artist/view.png"
           location={`/artist/view/${name}`}
         />
+      </div>
+      <div className="flex flex-col items-center justify-center mt-10">
+        <div
+          className="group hover:bg-[#DDDD] bg-[#1A2020] flex flex-col items-center justify-center transition-all ease-in-out duration-300 w-fit h-fit hover:cursor-pointer"
+          onClick={async () => {
+            await supabase.auth.signOut();
+            localStorage.removeItem("artist");
+            router.push("/");
+          }}
+        >
+          <p className="font-righteous text-[#DDDD] group-hover:text-[#1A2020] text-3xl p-5 pl-7 pr-7 transition-all ease-in-out duration-300">
+            Sign Out
+          </p>
+        </div>
       </div>
     </div>
   );

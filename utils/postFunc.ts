@@ -88,3 +88,34 @@ export const likeImage = async (id: string, table: string, value: string[]) => {
   if (error) console.log(error);
   return data;
 };
+
+export const uploadImage = async (
+  name: string,
+  description: string,
+  table: string,
+  user_id: string,
+  id: number,
+  width: string,
+  height: string
+) => {
+  var tableFormatted = table;
+  tableFormatted = tableFormatted.toLowerCase();
+  await supabase.from(tableFormatted).insert({
+    uid: id,
+    name: name,
+    description: description,
+    location: `https://ik.imagekit.io/arinji/${table}/${name}`,
+    likes: [],
+    artist: user_id,
+    width: width,
+    height: height,
+  });
+};
+
+export const updateImageName = async (
+  id: string,
+  name: string,
+  table: string
+) => {
+  await supabase.from(table).update({ name: name }).eq("uid", id);
+};

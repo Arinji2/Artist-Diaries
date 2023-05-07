@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { IKContext, IKUpload } from "imagekitio-react";
 import React, { useState, useEffect, useRef } from "react";
 import Loading from "../../components/Upload/loading";
@@ -5,11 +6,13 @@ import Success from "../../components/Upload/success";
 import Error from "../../components/Upload/error";
 import Image from "next/image";
 import { useUser } from "@supabase/auth-helpers-react";
-import { parseLocalStorageData } from "@/utils/artistLocalStorage";
+import {
+  parseLocalStorageData,
+  reFetchArtistData,
+} from "@/utils/artistLocalStorage";
 
-import type { ArtistImage, Artist } from "@/utils/types";
-import { reFetchArtistData } from "./manage";
-import { postArtistImages } from "@/utils/postFunc";
+import type { ArtistImage } from "@/utils/types";
+import { postArtistImages, uploadImage } from "@/utils/postFunc";
 interface Props {
   name: string;
   image: string;
@@ -27,8 +30,6 @@ function Upload() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [topic, setTopic] = useState("");
-  const [isTopic, setIsTopic] = useState(false);
-  const [artist, setArtist] = useState<Number>(0);
   const [error, setError] = useState({
     error: false,
     message: "",
@@ -38,7 +39,6 @@ function Upload() {
     const getImages = async () => {
       const data = parseLocalStorageData();
       setImages([...data.images]);
-      setArtist(data.id);
     };
     getImages();
   }, []);
@@ -78,11 +78,18 @@ function Upload() {
       };
 
       const upload = [...images, value];
-
-      await fetch(
-        `/api/uploadImage?name=${name}&description=${description}&table=${topic}&userId=${user?.id}&id=${id}&width=${locWidth}&height=${locHeight}`
-      );
-      if (user?.id !== undefined) await postArtistImages(user?.id, upload);
+      if (user?.id !== undefined) {
+        await uploadImage(
+          name,
+          description,
+          topic,
+          user?.id,
+          id,
+          locWidth,
+          locHeight
+        );
+        await postArtistImages(user?.id, upload);
+      }
       await reFetchArtistData(user?.id);
       setLoading(false);
       setSuccess(true);

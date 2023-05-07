@@ -1,14 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   parseLocalStorageData,
   verifyArtist,
+  reFetchArtistData,
 } from "@/utils/artistLocalStorage";
+import { fetchImageData } from "@/utils/fetchFunc";
 import { postAbout, postName } from "@/utils/postFunc";
 import type { Image as Item, Artist } from "@/utils/types";
 import { faEdit, faCheck } from "@fortawesome/fontawesome-free-solid";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useUser } from "@supabase/auth-helpers-react";
-import { IKContext, IKUpload } from "imagekitio-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -18,17 +20,9 @@ interface ChildProps {
   artist: Artist | null;
 }
 
-export const reFetchArtistData = async (id: any) => {
-  const data = await fetch(`/api/fetchArtist?id=${id}`);
-  const formattedData = await data.json();
-
-  localStorage.setItem("artist", JSON.stringify(formattedData[0]));
-};
-const getImageData = async (table: String, uid: Number) => {
-  const response = await fetch(`/api/fetchImage?table=${table}&uid=${uid}`);
-  var data = await response.json();
-  data = data[0];
-  return data as Item;
+const getImageData = async (table: string, uid: string) => {
+  const response = await fetchImageData(table, uid);
+  return response;
 };
 
 function Manage() {
@@ -60,7 +54,6 @@ const PersonalInfo: React.FC<ChildProps> = ({ artist }) => {
   const [name, setName] = useState<string>("");
   const [editAbout, setEditAbout] = useState(false);
   const [about, setAbout] = useState<string>("");
-  const buttonRef = useRef(null);
 
   return (
     <div className="w-full md:w-[70%] h-fit bg-[#440212] flex flex-col items-center md:items-start justify-center rounded-lg shadow-lg shadow-black relative">
@@ -147,7 +140,6 @@ const PersonalInfo: React.FC<ChildProps> = ({ artist }) => {
 export default Manage;
 
 const Favorites: React.FC<ChildProps> = ({ artist }) => {
-  const router = useRouter();
   interface Props {
     data: Item;
   }
@@ -161,7 +153,7 @@ const Favorites: React.FC<ChildProps> = ({ artist }) => {
     }
     if (!favorites) {
       artist.favorites.forEach((favorite) => {
-        const data = getImageData(favorite?.table, favorite?.uid);
+        const data = getImageData(favorite?.table, favorite?.uid.toString());
         data.then((res) => {
           setFavoritesArray((prev) => [...prev, res]);
         });
@@ -226,7 +218,7 @@ const Images: React.FC<ChildProps> = ({ artist }) => {
     }
 
     artist.images.forEach(async (image) => {
-      const data = getImageData(image.table, image.uid);
+      const data = getImageData(image.table, image.uid.toString());
 
       data.then((data) => {
         if (data !== undefined) setImagesArray((prev) => [...prev, data]);
@@ -236,8 +228,6 @@ const Images: React.FC<ChildProps> = ({ artist }) => {
       });
     });
   }, [artist]);
-
-  useEffect(() => {}, [imagesArray]);
 
   const Cards: React.FC<Props> = ({ data, index }) => {
     return (

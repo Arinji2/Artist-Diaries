@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 if (typeof window !== "undefined") import("@lottiefiles/lottie-player");
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
