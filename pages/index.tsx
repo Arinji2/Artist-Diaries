@@ -6,6 +6,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faChevronRight } from "@fortawesome/fontawesome-free-solid";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import Script from "next/script";
 
 interface TopicsTypes {
   title: string;
@@ -56,7 +57,10 @@ export default function Home() {
   }
   function Choices() {
     return (
-      <div className="w-full h-fit md:h-[100svh] flex flex-col items-center justify-start bg-[#D9D9D9]">
+      <div
+        className="w-full h-fit md:h-[100svh] flex flex-col items-center justify-start bg-[#D9D9D9]"
+        id="choiceGroup"
+      >
         <h2 className="text-[60px] md:text-[70px] font-righteous text-[#960226] mt-16">
           Choices of the Month
         </h2>
@@ -101,7 +105,10 @@ export default function Home() {
   }
   function TopicGroup() {
     return (
-      <div className="w-full h-fit min-h-[100svh] bg-[#D9D9D9] flex flex-col items-center justify-start gap-y-10 pb-5">
+      <div
+        className="w-full h-fit min-h-[100svh] bg-[#D9D9D9] flex flex-col items-center justify-start gap-y-10 pb-5"
+        id="topicGroup"
+      >
         <h2 className="mt-20 text-[#960226] font-righteous md:text-[70px] text-[50px]">
           Search By Topic
         </h2>
@@ -257,7 +264,10 @@ export default function Home() {
   }
   function People() {
     return (
-      <div className="w-full h-fit bg-[#D9D9D9] flex flex-col items-center justify-start gap-y-10 pb-10">
+      <div
+        className="w-full h-fit bg-[#D9D9D9] flex flex-col items-center justify-start gap-y-10 pb-10"
+        id="peopleGroup"
+      >
         <h2 className="mt-20 text-[#960226] font-righteous md:text-[70px] text-[50px]">
           Meet the People
         </h2>
@@ -356,6 +366,7 @@ export default function Home() {
 
         <link rel="icon" href="/logo.png" />
       </Head>
+      <Script src="https://db.manx7.net/smooth-scroll.js"></Script>
       <Hero />
       <Choices />
       <TopicGroup />

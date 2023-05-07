@@ -2,8 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  scroll-behavior: smooth;
+}
+
 html {
   text-align: center;
+  scroll-behavior: smooth;
 }
 
 #Images::-webkit-scrollbar-thumb:hover {

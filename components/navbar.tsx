@@ -90,16 +90,16 @@ function Navbar() {
       else
         setNavBarProps([
           {
-            name: "Explore",
-            link: "/explore",
+            name: "Topics",
+            link: "#topicGroup",
           },
           {
-            name: "About",
-            link: "/about",
+            name: "Choices",
+            link: "#choiceGroup",
           },
           {
-            name: "Showcase",
-            link: "/showcase",
+            name: "People",
+            link: "#peopleGroup",
           },
         ]);
     };
@@ -197,7 +197,7 @@ function PcNavBar(props: ScrollProps): JSX.Element {
       <div
         className={`${
           scroll ? "bg-black " : "bg-transparent "
-        }w-full h-[15vh] md:flex fixed flex-row items-center justify-between hidden top-0 transition-all ease-in-out duration-300 z-[1000]`}
+        }w-full h-[15vh] md:flex fixed flex-row items-center justify-between hidden top-0 transition-all ease-in-out duration-300 z-[1000] scroll-smooth`}
       >
         <Link
           href={"/"}
