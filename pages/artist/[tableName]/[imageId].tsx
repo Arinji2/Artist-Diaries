@@ -18,6 +18,8 @@ import type { Image as ImageDataInterface } from "@/utils/types";
 import {
   postArtistFavorites,
   postArtistImages,
+  postImage,
+  updateImageDescription,
   updateImageName,
 } from "@/utils/postFunc";
 import { fetchImageData } from "@/utils/fetchFunc";
@@ -304,9 +306,7 @@ const DescriptionComp: React.FC<CompProps> = ({
               icon={faCheck as IconProp}
               className="w-[40px] h-[40px] text-green-400"
               onClick={() => {
-                fetch(
-                  `/api/updateImageDescription?id=${id}&table=${table}&description=${newValue}`
-                )
+                updateImageDescription(id, newValue, table)
                   .then(() => {
                     setPrevValue(newValue);
                     setEdit(false);
@@ -367,7 +367,7 @@ const FavoritesComp: React.FC<FavoriteProps> = ({
     const updateFavorites = async () => {
       if (user?.id !== undefined) {
         await postArtistFavorites(user?.id, value);
-        console.log("2", user?.id);
+
         await reFetchArtistData(user?.id);
       }
     };
@@ -454,7 +454,7 @@ const DeleteComp: React.FC<DeleteProps> = ({
       if (user?.id !== undefined) {
         await postArtistImages(user?.id, value);
         await fetch(`/api/imageKit/deleteFile?fileName=${name}`);
-        console.log(3, user?.id);
+
         await reFetchArtistData(user?.id);
         router.push("/artist/manage");
       }

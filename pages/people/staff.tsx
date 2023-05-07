@@ -11,9 +11,7 @@ import {
 } from "@/utils/fetchFunc";
 
 const Staff: NextPage<any> = ({ serverRes }) => {
-  useEffect(() => {
-    console.log(serverRes);
-  }, [serverRes]);
+  useEffect(() => {}, [serverRes]);
   const [data, setData] = useState<Artist[]>([...serverRes]);
   const [offset, setOffset] = useState<number>(3);
   const [end, setEnd] = useState<boolean>(false);

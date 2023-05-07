@@ -9,9 +9,6 @@ export const postName = async (name: string, user_id: any) => {
       name: name,
     })
     .eq("user_id", user_id);
-
-  if (error) {
-  }
 };
 
 export const postAbout = async (about: string, user_id: any) => {
@@ -78,15 +75,13 @@ export const postArtistFavorites = async (id: string, value: ArtistImage[]) => {
 };
 
 export const likeImage = async (id: string, table: string, value: string[]) => {
-  console.log(table, id, value);
   const { data, error } = await supabase
     .from(table)
     .update({
       likes: value,
     })
     .eq("uid", id);
-  if (error) console.log(error);
-  return data;
+  if (error) return data;
 };
 
 export const uploadImage = async (
@@ -118,4 +113,12 @@ export const updateImageName = async (
   table: string
 ) => {
   await supabase.from(table).update({ name: name }).eq("uid", id);
+};
+
+export const updateImageDescription = async (
+  id: string,
+  description: string,
+  table: string
+) => {
+  await supabase.from(table).update({ description: description }).eq("uid", id);
 };
