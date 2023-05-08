@@ -62,7 +62,7 @@ const Page: NextPage<any> = ({ serverRes }) => {
   );
 };
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const serverRes = await fetchStaticPaginatedData("scenery", 0);
   return {
     props: {

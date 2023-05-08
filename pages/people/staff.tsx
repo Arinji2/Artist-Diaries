@@ -78,7 +78,7 @@ const Staff: NextPage<any> = ({ serverRes }) => {
   );
 };
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const serverRes = await fetchStaticPaginatedData("staff", 0);
 
   return {

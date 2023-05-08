@@ -77,7 +77,7 @@ const Supporters: NextPage<any> = ({ serverRes }) => {
   );
 };
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const serverRes = await fetchStaticPaginatedData("supporters", 0);
   return {
     props: {
